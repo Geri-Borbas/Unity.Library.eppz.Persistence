@@ -16,5 +16,12 @@ namespace EPPZ.Persistence
 
 
 	public class Zip
-	{ }
+	{
+
+
+		public static void Compress()
+		{
+
+		}
+	}
 }
