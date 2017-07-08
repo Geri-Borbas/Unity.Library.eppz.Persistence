@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <!-- All configurations -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Local</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DFE0DEA6-0BEA-45D8-A203-39F02683F127}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>EPPZ.Persistence.Test</RootNamespace>
+    <AssemblyName>EPPZ.Persistence.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+
+  <!-- `Local` configuration -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Local|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <IntermediateOutputPath>..\..\..\..\obj</IntermediateOutputPath> <!-- In Unity project root (outside `Assets` folder) --> 
+    <OutputPath>..\..\..\..\bin</OutputPath> <!-- In Unity project root (outside `Assets` folder) -->
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+
+  <!-- `Travis` configuration -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Travis|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <IntermediateOutputPath>obj</IntermediateOutputPath>
+    <OutputPath>bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="NUnit.Framework (Local)">
+      <!-- Installed on my MacBook -->
+      <HintPath>/Users/eppz/Projects/Unity/Packages/NUnit/NUnit.3.7.1/lib/net45/nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnit.Framework (Travis)">
+      <!-- Installed on Travis (see `before_install` in `.travis.yml`) -->
+      <HintPath>packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include=".travis.yml" />
+  </ItemGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <Compile Include="Zip.cs" />
+    <Compile Include="Editor\Test\Zip.cs" />
+  </ItemGroup>
+  
+</Project>

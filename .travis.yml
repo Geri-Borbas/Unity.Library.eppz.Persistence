@@ -1,0 +1,7 @@
+﻿language: csharp
+before_install:
+  - sudo nuget install -OutputDirectory packages NUnit -Version 3.7.1
+  - sudo nuget install -OutputDirectory packages NUnit.Console -Version 3.6.1
+script:
+  - xbuild /property:Configuration=Travis Test.csproj
+  - mono packages/NUnit.ConsoleRunner.3.6.1/tools/nunit3-console.exe bin/EPPZ.Persistence.Test.dll
