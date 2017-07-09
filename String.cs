@@ -24,6 +24,17 @@ namespace EPPZ.Persistence
 	{
 
 
+		/// <summary>
+		/// A fallback for `Stream.CopyTo()` (only introduced in .NET 4).
+		/// </summary>
+		public static void _CopyTo(this Stream this_, Stream outputStream, int bufferSize = 4096)
+        {
+            byte[] bytes = new byte[bufferSize];
+            int bytesRead;
+            while ((bytesRead = this_.Read(bytes, 0, bytes.Length)) != 0)
+            { outputStream.Write(bytes, 0, bytesRead); }
+        }
+
 		public static string Zip(this string this_)
 		{
 			byte[] stringBytes = Encoding.UTF8.GetBytes(this_);
@@ -37,7 +48,7 @@ namespace EPPZ.Persistence
 				using (MemoryStream outputStream = new MemoryStream())
 				{
 					using (GZipStream zipStream = new GZipStream(outputStream, CompressionMode.Compress))
-					{ inputStream.CopyTo(zipStream); }
+					{ inputStream._CopyTo(zipStream); }
 					return outputStream.ToArray();
 				}
 		}
@@ -55,7 +66,7 @@ namespace EPPZ.Persistence
     			using (MemoryStream outputStream = new MemoryStream())
 				{
 					using (GZipStream zipStream = new GZipStream(inputStream, CompressionMode.Decompress))
-					{ zipStream.CopyTo(outputStream); }
+					{ zipStream._CopyTo(outputStream); }
 					return outputStream.ToArray();
 				}
 		}

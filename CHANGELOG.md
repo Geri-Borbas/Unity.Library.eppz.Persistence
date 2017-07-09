@@ -1,5 +1,10 @@
 # eppz.Persistence
 
+* 0.2.1
+
+	+ Created `Stream._CopyTo()` fallback
+	+ Updated tests, fiddles
+
 * 0.2.0
 
 	+ Using `System.IO.Compression`

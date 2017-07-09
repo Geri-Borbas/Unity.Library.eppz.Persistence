@@ -42,32 +42,21 @@ namespace EPPZ.Persistence.Editor.Test
 				"H4sIAAAAAAAAA3NKLMlNzAMAOC2+JQYAAAA=",
 				"Batman".Zip()
 			);
-			
-			Assert.AreEqual(
-				"H4sIAAAAAAAAA1MAAEXPbOkBAAAA",
-				" ".Zip()
-			);
 		}
 
 		[Test]
 		public void Test_Unzip()
 		{			
-			// See pako.js counterpart at http://jsfiddle.net/9yH7M/841/	
+			// See pako.js counterpart at http://jsfiddle.net/9yH7M/847/
 			Assert.AreEqual(
 				"Some test string to compress.",
 				"H4sIAAAAAAAAAwvOz01VKEktLlEoLinKzEtXKMlXSM7PLShKLS7WAwAr6BTWHQAAAA==".Unzip()
 			);		
 
-			// See pako.js counterpart at http://jsfiddle.net/9yH7M/839/		
+			// See pako.js counterpart at http://jsfiddle.net/9yH7M/845/
 			Assert.AreEqual(
 				"Batman",
 				"H4sIAAAAAAAAA3NKLMlNzAMAOC2+JQYAAAA=".Unzip()
-			);
-			
-			// See pako.js counterpart at http://jsfiddle.net/9yH7M/838/
-			Assert.AreEqual(
-				" ",
-				"H4sIAAAAAAAAA1MAAEXPbOkBAAAAA".Unzip()
 			);
 		}
 	}
