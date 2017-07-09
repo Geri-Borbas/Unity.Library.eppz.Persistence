@@ -59,8 +59,8 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <Compile Include="Zip.cs" />
-    <Compile Include="Editor\Test\Zip.cs" />
+    <Compile Include="String.cs" />
+    <Compile Include="Editor\Test\String.cs" />
   </ItemGroup>
   
 </Project>

@@ -9,6 +9,7 @@
 using UnityEngine;
 using UnityEditor;
 #endif
+using System;
 using NUnit.Framework;
 
 
@@ -17,7 +18,7 @@ namespace EPPZ.Persistence.Editor.Test
 
 
 	[TestFixture]
-	public class Zip
+	public class String
 	{
 
 
@@ -32,7 +33,42 @@ namespace EPPZ.Persistence.Editor.Test
 		[Test]
 		public void Test_Zip()
 		{
-			Assert.IsTrue(true);
+			Assert.AreEqual(
+				"H4sIAAAAAAAAAwvOz01VKEktLlEoLinKzEtXKMlXSM7PLShKLS7WAwAr6BTWHQAAAA==",
+				"Some test string to compress.".Zip()
+			);
+			
+			Assert.AreEqual(
+				"H4sIAAAAAAAAA3NKLMlNzAMAOC2+JQYAAAA=",
+				"Batman".Zip()
+			);
+			
+			Assert.AreEqual(
+				"H4sIAAAAAAAAA1MAAEXPbOkBAAAA",
+				" ".Zip()
+			);
+		}
+
+		[Test]
+		public void Test_Unzip()
+		{			
+			// See pako.js counterpart at http://jsfiddle.net/9yH7M/841/	
+			Assert.AreEqual(
+				"Some test string to compress.",
+				"H4sIAAAAAAAAAwvOz01VKEktLlEoLinKzEtXKMlXSM7PLShKLS7WAwAr6BTWHQAAAA==".Unzip()
+			);		
+
+			// See pako.js counterpart at http://jsfiddle.net/9yH7M/839/		
+			Assert.AreEqual(
+				"Batman",
+				"H4sIAAAAAAAAA3NKLMlNzAMAOC2+JQYAAAA=".Unzip()
+			);
+			
+			// See pako.js counterpart at http://jsfiddle.net/9yH7M/838/
+			Assert.AreEqual(
+				" ",
+				"H4sIAAAAAAAAA1MAAEXPbOkBAAAAA".Unzip()
+			);
 		}
 	}
 }

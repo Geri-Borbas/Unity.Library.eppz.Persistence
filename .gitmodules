@@ -1,4 +1,0 @@
-[submodule "Unity.IO.Compression"]
-	path = Unity.IO.Compression
-	url = https://github.com/eppz/Unity.IO.Compression
-	branch = Release
