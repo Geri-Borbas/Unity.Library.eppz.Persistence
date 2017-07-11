@@ -6,4 +6,5 @@ before_install:
   - tar --extract --file packages/UnityEngine.dll/5.5.0f3.tar.gz --directory packages/UnityEngine.dll --strip-components=1
 script:
   - xbuild /property:Configuration=Travis Test.csproj
+after_script:
   - mono packages/NUnit.ConsoleRunner.3.6.1/tools/nunit3-console.exe bin/EPPZ.Persistence.Test.dll
