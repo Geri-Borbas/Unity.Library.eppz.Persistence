@@ -2,6 +2,8 @@
 before_install:
   - sudo nuget install -OutputDirectory packages NUnit -Version 3.7.1
   - sudo nuget install -OutputDirectory packages NUnit.Console -Version 3.6.1
+  - wget https://github.com/eppz/Unity.Packages.UnityEngine.dll/archive/5.5.0f3.tar.gz --directory-prefix packages/UnityEngine.dll
+  - tar --extract --file packages/UnityEngine.dll/5.5.0f3.tar.gz --directory packages/UnityEngine.dll --strip-components=1
 script:
   - xbuild /property:Configuration=Travis Test.csproj
   - mono packages/NUnit.ConsoleRunner.3.6.1/tools/nunit3-console.exe bin/EPPZ.Persistence.Test.dll

@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>EPPZ.Persistence.Test</RootNamespace>
     <AssemblyName>EPPZ.Persistence.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -21,10 +21,12 @@
     <Optimize>false</Optimize>
     <IntermediateOutputPath>..\..\..\..\obj</IntermediateOutputPath> <!-- In Unity project root (outside `Assets` folder) --> 
     <OutputPath>..\..\..\..\bin</OutputPath> <!-- In Unity project root (outside `Assets` folder) -->
-    <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <!-- Compiler -->
+    <PackagesFolder>/Users/eppz/Projects/Unity/Packages</PackagesFolder> <!-- /Users/eppz/Projects/Unity/Packages -->
+    <DefineConstants>LOCAL;DEBUG</DefineConstants>
   </PropertyGroup>
 
   <!-- `Travis` configuration -->
@@ -36,17 +38,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <!-- Compiler stuff -->
+    <PackagesFolder>packages</PackagesFolder>
+    <DefineConstants>TRAVIS;</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
+
     <Reference Include="System" />
-    <Reference Include="NUnit.Framework (Local)">
-      <!-- Installed on my MacBook -->
-      <HintPath>/Users/eppz/Projects/Unity/Packages/NUnit/NUnit.3.7.1/lib/net45/nunit.framework.dll</HintPath>
+    <Reference Include="NUnit.Framework">
+      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="NUnit.Framework (Travis)">
-      <!-- Installed on Travis (see `before_install` in `.travis.yml`) -->
-      <HintPath>packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -59,8 +66,13 @@
 
   <!-- Source files -->
   <ItemGroup>
+    <Compile Include="ExtensionAttribute.cs" /> <!-- Needed in .NET 2.0 -->
     <Compile Include="String.cs" />
+    <Compile Include="Serializer.cs" />
+    <Compile Include="BinarySerializer.cs" />
+    <Compile Include="JSONSerializer.cs" />
     <Compile Include="Editor\Test\String.cs" />
+    <Compile Include="Editor\Test\JSONSerializer.cs" />
   </ItemGroup>
   
 </Project>
