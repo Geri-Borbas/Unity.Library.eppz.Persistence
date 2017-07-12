@@ -6,8 +6,10 @@
 		+ Implement string serialization (Base64)
 		+ Implement `Apply` functionality (?)
 			+ If so, move up templates to `Serializer`
-	+ `JSONSerializer`
-		+ Tests
+	
+* 0.3.2
+
+	+ `JSONSerializer` tests
 
 * 0.3.0
 

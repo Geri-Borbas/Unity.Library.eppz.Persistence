@@ -16,30 +16,40 @@ namespace EPPZ.Persistence.Editor.Test
 {
 
 
-	[Serializable]
-	public class Foo
-	{
-		public string bar;
-	}
-
-
 	[TestFixture]
 	public class JSONSerializer
 	{
 
 
 		EPPZ.Persistence.JSONSerializer serializer;
-		Foo foo;
-		string JSON;
+		string path; 
+
+		Entity first;
+		string first_JSON;
+		Entity second;
+		string second_JSON;
 
 
 		[SetUp]
 		public void Setup()
 		{
 			serializer = new EPPZ.Persistence.JSONSerializer();
-			foo = new Foo();
-			foo.bar = "data";
-			JSON = "{\"bar\":\"data\"}";
+			path = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/";
+
+			first = new Entity(
+				1,
+				"First",
+				2,3,4
+			);
+			second = new Entity(
+				2,
+				"Second",
+				1,3,4
+			);
+
+			first_JSON = "{\"ID\":1,\"name\":\"First\",\"entities\":[2,3,4]}";
+			second_JSON = "{\"ID\":2,\"name\":\"Second\",\"entities\":[1,3,4]}";			
+			
 		}
 
 		[TearDown]
@@ -50,8 +60,18 @@ namespace EPPZ.Persistence.Editor.Test
 		public void Test_StringToObject()
 		{
 			Assert.AreEqual(
-				serializer.StringToObject<Foo>(JSON).bar,
-				foo.bar
+				serializer.StringToObject<Entity>(first_JSON),
+				first
+			);
+
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(second_JSON),
+				second
+			);
+
+			Assert.AreNotEqual(
+				serializer.StringToObject<Entity>(first_JSON),
+				serializer.StringToObject<Entity>(second_JSON)
 			);
 		}
 
@@ -59,8 +79,27 @@ namespace EPPZ.Persistence.Editor.Test
 		public void Test_ObjectToString()
 		{
 			Assert.AreEqual(
-				serializer.ObjectToString(foo),
-				JSON
+				serializer.ObjectToString(first),
+				first_JSON
+			);
+
+			Assert.AreEqual(
+				serializer.ObjectToString(second),
+				second_JSON
+			);
+
+			Assert.AreNotEqual(
+				serializer.ObjectToString(first),
+				serializer.ObjectToString(second)
+			);
+		}
+
+		[Test]
+		public void Test_FileToObject()
+		{
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(path+"second.json"),
+				second
 			);
 		}
 	}
