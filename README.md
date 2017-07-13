@@ -1,5 +1,5 @@
 # eppz.Persistence
-> part of [**Unity.Library.eppz**](https://github.com/eppz/Unity.Library.eppz)
+> part of [**Unity.Library.eppz**](https://github.com/eppz/Unity.Library.eppz)<br />
 [![Build Status](https://travis-ci.org/eppz/Unity.Test.eppz.png?branch=master)](https://travis-ci.org/eppz/Unity.Test.eppz)
 
 Object serialization (Binary, JSON, GZip).
