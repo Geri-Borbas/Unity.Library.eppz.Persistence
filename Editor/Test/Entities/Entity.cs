@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace EPPZ.Persistence.Editor.Test
+namespace EPPZ.Persistence.Editor.Test.Entities
 {
 
 
@@ -20,22 +20,27 @@ namespace EPPZ.Persistence.Editor.Test
 
         public int ID;
 		public string name;
-        public List<int> entities;
+		public List<Payload> payloads;
 
 
-		public Entity(int ID, string name, params int[] entities)
+		public Entity(int ID, string name, params Payload[] payloads)
 		{
 			this.ID = ID;
 			this.name = name;
-			this.entities = new List<int>(entities);
+			this.payloads = new List<Payload>(payloads);			
 		}
 
 		public bool Equals(Entity other)
 		{
+			// Compare each other payloads.
+			bool payloadsEqual = true;
+			foreach (Payload eachOtherPayload in other.payloads)
+			{ payloadsEqual &= payloads.Contains(eachOtherPayload); }
+
 			return (
 				this.ID == other.ID &&
 				this.name == other.name &&
-				this.entities.ToString() == other.entities.ToString()
+				payloadsEqual
 			);
 		}
 	}

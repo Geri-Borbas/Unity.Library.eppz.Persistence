@@ -1,12 +1,9 @@
 # eppz.Persistence
 
-* Doing
+* 0.3.4
 
-	+ `BinarySerializer`
-		+ Implement string serialization (Base64)
-		+ Implement `Apply` functionality (?)
-			+ If so, move up templates to `Serializer`
-	
+	+ More `JSONSerializer` tests
+
 * 0.3.2
 
 	+ `JSONSerializer` tests

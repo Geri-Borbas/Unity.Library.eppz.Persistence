@@ -16,48 +16,145 @@ namespace EPPZ.Persistence.Editor.Test
 {
 
 
+	using Entities;
+
+
 	[TestFixture]
 	public class JSONSerializer
 	{
 
 
 		EPPZ.Persistence.JSONSerializer serializer;
-		string path; 
+		string testFolderPath;
 
-		Entity first;
-		string first_JSON;
-		Entity second;
-		string second_JSON;
+		Payload alpha, beta, gamma;
+		Entity first, second, third, fourth;
+		string first_JSON, second_JSON, third_JSON, fourth_JSON;
 
 
 		[SetUp]
 		public void Setup()
 		{
 			serializer = new EPPZ.Persistence.JSONSerializer();
-			path = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/";
+			testFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/";
+
+			// Object graph.
+			alpha = new Payload(
+				1,
+				"Alpha",
+				0,1,2,3,4,5,6,7,8,9
+			);
+			beta = new Payload(
+				2,
+				"Beta",
+				0,1,2,3,4,5,6,7,8,9
+			);
+			gamma = new Payload(
+				3,
+				"Gamma",
+				0,1,2,3,4,5,6,7,8,9
+			);
 
 			first = new Entity(
 				1,
 				"First",
-				2,3,4
+				alpha,
+				beta,
+				gamma
 			);
+
 			second = new Entity(
 				2,
 				"Second",
-				1,3,4
+				beta,
+				gamma
 			);
 
-			first_JSON = "{\"ID\":1,\"name\":\"First\",\"entities\":[2,3,4]}";
-			second_JSON = "{\"ID\":2,\"name\":\"Second\",\"entities\":[1,3,4]}";			
-			
+			third = new Entity(
+				3,
+				"Third",
+				gamma
+			);
+
+			fourth = new Entity(
+				4,
+				"Fourth"
+			);
+
+			serializer.SerializeObjectToFile(first, testFolderPath + "first", true);
+			serializer.SerializeObjectToFile(second, testFolderPath + "second", true);
+			serializer.SerializeObjectToFile(third, testFolderPath + "third", true);
+			serializer.SerializeObjectToFile(fourth, testFolderPath + "fourth", true);			
+
+			// JSON representation (escaped double quotes).
+			first_JSON = "{\"ID\":1,\"name\":\"First\",\"payloads\":[{\"ID\":1,\"name\":\"Alpha\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
+			second_JSON = "{\"ID\":2,\"name\":\"Second\",\"payloads\":[{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
+			third_JSON = "{\"ID\":3,\"name\":\"Third\",\"payloads\":[{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
+			fourth_JSON = "{\"ID\":4,\"name\":\"Fourth\",\"payloads\":[]}";
 		}
 
 		[TearDown]
 		public void TeaerDown()
 		{ }
 
+
+	#region Model
+
 		[Test]
-		public void Test_StringToObject()
+		public void PayloadEquals()
+		{
+			Assert.AreEqual(
+				new Payload(1, "Alpha", 0,1,2,3,4,5,6,7,8,9),
+				new Payload(1, "Alpha", 0,1,2,3,4,5,6,7,8,9)
+			);
+
+			Assert.AreEqual(
+				new Payload(1, "Alpha", 0,1,2,3,4,5,6,7,8,9),
+				alpha
+			);
+
+			Assert.AreEqual(
+				alpha,
+				alpha
+			);
+		}
+
+		[Test]
+		public void EntityEquals()
+		{
+			Assert.AreEqual(
+				new Entity(3, "Third", gamma),
+				new Entity(3, "Third", gamma)
+			);
+
+			Assert.AreEqual(
+				new Entity(3, "Third", new Payload(3, "Gamma", 0,1,2,3,4,5,6,7,8,9)),
+				new Entity(3, "Third", gamma)
+			);
+
+			Assert.AreEqual(
+				new Entity(3, "Third", gamma),
+				third
+			);
+
+			Assert.AreEqual(
+				new Entity(3, "Third", new Payload(3, "Gamma", 0,1,2,3,4,5,6,7,8,9)),
+				third
+			);
+
+			Assert.AreEqual(
+				third,
+				third
+			);
+		}
+
+	#endregion
+
+
+	#region String
+
+		[Test]
+		public void StringToObject()
 		{
 			Assert.AreEqual(
 				serializer.StringToObject<Entity>(first_JSON),
@@ -69,14 +166,19 @@ namespace EPPZ.Persistence.Editor.Test
 				second
 			);
 
-			Assert.AreNotEqual(
-				serializer.StringToObject<Entity>(first_JSON),
-				serializer.StringToObject<Entity>(second_JSON)
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(third_JSON),
+				third
+			);
+
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(fourth_JSON),
+				fourth
 			);
 		}
 
 		[Test]
-		public void Test_ObjectToString()
+		public void ObjectToString()
 		{
 			Assert.AreEqual(
 				serializer.ObjectToString(first),
@@ -87,20 +189,48 @@ namespace EPPZ.Persistence.Editor.Test
 				serializer.ObjectToString(second),
 				second_JSON
 			);
+			Assert.AreEqual(
+				serializer.ObjectToString(third),
+				third_JSON
+			);
 
-			Assert.AreNotEqual(
-				serializer.ObjectToString(first),
-				serializer.ObjectToString(second)
+			Assert.AreEqual(
+				serializer.ObjectToString(fourth),
+				fourth_JSON
 			);
 		}
+
+	#endregion
+
+
+	#region File
 
 		[Test]
-		public void Test_FileToObject()
+		public void FileToObject()
 		{
 			Assert.AreEqual(
-				serializer.FileToObject<Entity>(path+"second.json"),
+				serializer.FileToObject<Entity>(testFolderPath+"first.json"),
+				first
+			);
+
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath+"second.json"),
 				second
 			);
+
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath+"third.json"),
+				third
+			);
+
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath+"fourth.json"),
+				fourth
+			);
 		}
+
+	#endregion
+	
+
 	}
 }

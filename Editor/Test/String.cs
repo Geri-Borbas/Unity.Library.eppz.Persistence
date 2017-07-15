@@ -27,7 +27,7 @@ namespace EPPZ.Persistence.Editor.Test
 		{ }
 
 		[Test]
-		public void Test_Zip()
+		public void Zip()
 		{
 			Assert.AreEqual(
 				"H4sIAAAAAAAAAwvOz01VKEktLlEoLinKzEtXKMlXSM7PLShKLS7WAwAr6BTWHQAAAA==",
@@ -48,7 +48,7 @@ namespace EPPZ.Persistence.Editor.Test
 		}
 
 		[Test]
-		public void Test_Unzip()
+		public void Unzip()
 		{			
 			// See pako.js counterpart at http://jsfiddle.net/9yH7M/847/
 			Assert.AreEqual(
