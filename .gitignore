@@ -9,3 +9,4 @@ packages
 bin
 obj
 *.userprefs
+Editor/Test/Entities/.temp

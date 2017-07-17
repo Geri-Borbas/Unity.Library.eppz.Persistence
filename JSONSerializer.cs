@@ -22,6 +22,8 @@ namespace EPPZ.Persistence
 
 	#region Aliases
 
+		public enum Mode { Default, Pretty }
+
 		public void ApplyStringTo(string _string, object _object)
 		{ ApplyDeserializedStringToObject(_string, _object); }
 
@@ -30,6 +32,9 @@ namespace EPPZ.Persistence
 
 		public void ApplyStreamTo(Stream stream, object _object)
 		{ ApplyDeserializedStreamToObject(stream, _object); }
+
+		public void ObjectToFile(object _object, string filePath, Mode mode)
+		{ SerializeObjectToFile(_object, filePath, mode); }
 
 	#endregion
 
@@ -41,17 +46,17 @@ namespace EPPZ.Persistence
 
 
 		public override string SerializeObjectToString(object _object)
-		{ return SerializeObjectToString(_object, false); }
+		{ return SerializeObjectToString(_object, Mode.Default); }
 
-		public string SerializeObjectToString(object _object, bool pretty)
-		{ return JsonUtility.ToJson(_object, pretty); }
+		public string SerializeObjectToString(object _object, Mode mode)
+		{ return JsonUtility.ToJson(_object, (mode == Mode.Pretty)); }
 
 		public override void SerializeObjectToFile(object _object, string filePath)
-		{ SerializeObjectToFile(_object, filePath, false); }
+		{ SerializeObjectToFile(_object, filePath, Mode.Default); }
 
-		public void SerializeObjectToFile(object _object, string filePath, bool pretty)
-		{ 
-			string JSON = JsonUtility.ToJson(_object, pretty);
+		public void SerializeObjectToFile(object _object, string filePath, Mode mode)
+		{
+			string JSON = JsonUtility.ToJson(_object, (mode == Mode.Pretty));
 			File.WriteAllText(GetFilePathWithExtension(filePath), JSON);	
 		}
 
@@ -77,12 +82,12 @@ namespace EPPZ.Persistence
 
 		public override T DeserializeFile<T>(string filePath)
 		{
-			if (File.Exists(filePath) == false) return default(T); // Only if saved any
+			if (IsFileExist(filePath) == false) return default(T); // Only if saved any
 
 			T _object = default(T);
 			try
 			{
-				string JSON = File.ReadAllText(filePath);
+				string JSON = File.ReadAllText(GetFilePathWithExtension(filePath));
 				_object = JsonUtility.FromJson<T>(JSON);
 			}
 			catch (Exception exception)
@@ -93,11 +98,11 @@ namespace EPPZ.Persistence
 
 		public void ApplyDeserializedFileToObject(string filePath, object _object)
 		{
-			if (File.Exists(filePath) == false) return; // Only if saved any
+			if (IsFileExist(filePath) == false) return; // Only if saved any
 
 			try
 			{
-				string JSON = File.ReadAllText(filePath);
+				string JSON = File.ReadAllText(GetFilePathWithExtension(filePath));
 				JsonUtility.FromJsonOverwrite(JSON, _object);
 			}
 			catch (Exception exception)

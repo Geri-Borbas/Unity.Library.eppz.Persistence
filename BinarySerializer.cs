@@ -37,7 +37,7 @@ namespace EPPZ.Persistence
 
 		public override T DeserializeFile<T>(string filePath)
 		{
-            if (File.Exists(filePath) == false) return default(T); // Only if saved any
+            if (IsFileExist(filePath) == false) return default(T); // Only if saved any
 
 			T _object = default(T);
 			try

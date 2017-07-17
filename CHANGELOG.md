@@ -1,5 +1,11 @@
 # eppz.Persistence
 
+* 0.3.5
+
+	+ Even more `JSONSerializer` tests
+	+ `Assertation` helper to assert (text) file content equality
+	+ `JSONSerializer.Mode` made explicit (instead `bool` property)
+
 * 0.3.4
 
 	+ More `JSONSerializer` tests
