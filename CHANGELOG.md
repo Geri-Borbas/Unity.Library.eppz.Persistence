@@ -1,5 +1,9 @@
 # eppz.Persistence
 
+* 0.3.51
+	
+	+ Create temp folder if not yet exist
+
 * 0.3.5
 
 	+ Even more `JSONSerializer` tests

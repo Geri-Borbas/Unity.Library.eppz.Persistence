@@ -241,6 +241,9 @@ namespace EPPZ.Persistence.Editor.Test
 		[Test]
 		public void ObjectToFile_Pretty()
 		{
+ 			if (!Directory.Exists(tempFolderPath))
+            { Directory.CreateDirectory(tempFolderPath); }
+
 			serializer.ObjectToFile(first, tempFolderPath+"first_test_pretty", Mode.Pretty);
 			Assertation.AreFilesEqual(
 				testFolderPath+"first.json",
@@ -269,6 +272,9 @@ namespace EPPZ.Persistence.Editor.Test
 		[Test]
 		public void ObjectToFile()
 		{
+ 			if (!Directory.Exists(tempFolderPath))
+            { Directory.CreateDirectory(tempFolderPath); }
+			
 			serializer.ObjectToFile(first, tempFolderPath+"first_test");
 			Assert.AreEqual(
 				first_JSON,
