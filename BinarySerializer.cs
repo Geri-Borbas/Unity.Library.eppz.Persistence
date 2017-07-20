@@ -54,14 +54,17 @@ namespace EPPZ.Persistence
 			return _object;
         }
 
-		public override T DeserializeStream<T>(Stream stream)
+		public override T DeserializeResource<T>(string resourcePath)
 		{
             T _object = default(T);
 			try
 			{
 				Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes"); // Fix iOS AOT issue
+				TextAsset textAsset = Resources.Load(resourcePath) as TextAsset;
+				if (textAsset == null)
+				{ return _object; }
+				Stream stream = new MemoryStream(textAsset.bytes);
 				BinaryFormatter formatter = new BinaryFormatter();
-				stream.Position = 0; // Reset
 				_object = (T)formatter.Deserialize(stream);
 			}
 			catch (Exception exception)

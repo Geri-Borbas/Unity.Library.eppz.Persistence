@@ -30,8 +30,8 @@ namespace EPPZ.Persistence
 		public void ApplyFileTo(string filePath, object _object)
 		{ ApplyDeserializedFileToObject(filePath, _object); }
 
-		public void ApplyStreamTo(Stream stream, object _object)
-		{ ApplyDeserializedStreamToObject(stream, _object); }
+		public void ApplyResourceTo(string resourcePath, object _object)
+		{ ApplyDeserializedResourceToObject(resourcePath, _object); }
 
 		public void ObjectToFile(object _object, string filePath, Mode mode)
 		{ SerializeObjectToFile(_object, filePath, mode); }
@@ -44,22 +44,16 @@ namespace EPPZ.Persistence
 		public override string Extension
 		{ get { return "json"; } }
 
+	#endregion
+
+
+	#region String
 
 		public override string SerializeObjectToString(object _object)
 		{ return SerializeObjectToString(_object, Mode.Default); }
 
 		public string SerializeObjectToString(object _object, Mode mode)
 		{ return JsonUtility.ToJson(_object, (mode == Mode.Pretty)); }
-
-		public override void SerializeObjectToFile(object _object, string filePath)
-		{ SerializeObjectToFile(_object, filePath, Mode.Default); }
-
-		public void SerializeObjectToFile(object _object, string filePath, Mode mode)
-		{
-			string JSON = JsonUtility.ToJson(_object, (mode == Mode.Pretty));
-			File.WriteAllText(GetFilePathWithExtension(filePath), JSON);	
-		}
-
 
 		public override T DeserializeString<T>(string _string)
 		{ 
@@ -78,6 +72,20 @@ namespace EPPZ.Persistence
 			{ JsonUtility.FromJsonOverwrite(_string, _object); }
 			catch (Exception exception)
 			{ Debug.LogWarning("Serializer exception: "+exception); }
+		}
+
+	#endregion
+
+
+	#region File
+
+		public override void SerializeObjectToFile(object _object, string filePath)
+		{ SerializeObjectToFile(_object, filePath, Mode.Default); }
+
+		public void SerializeObjectToFile(object _object, string filePath, Mode mode)
+		{
+			string JSON = JsonUtility.ToJson(_object, (mode == Mode.Pretty));
+			File.WriteAllText(GetFilePathWithExtension(filePath), JSON);	
 		}
 
 		public override T DeserializeFile<T>(string filePath)
@@ -109,13 +117,20 @@ namespace EPPZ.Persistence
 			{ Debug.LogWarning("Serializer exception: "+exception); }
 		}
 
-		public override T DeserializeStream<T>(Stream stream)
+	#endregion
+
+
+	#region Resource
+
+		public override T DeserializeResource<T>(string resourcePath)
 		{ 
 			T _object = default(T);
 			try
 			{
-				StreamReader reader = new StreamReader(stream);
-				string JSON = reader.ReadToEnd();
+				TextAsset textAsset = Resources.Load(resourcePath) as TextAsset;
+				if (textAsset == null)
+				{ return _object; }
+				string JSON = textAsset.text;
 				_object = JsonUtility.FromJson<T>(JSON);
 			}
 			catch (Exception exception)
@@ -123,13 +138,15 @@ namespace EPPZ.Persistence
 
 			return _object;
 		}
-
-		public void ApplyDeserializedStreamToObject(Stream stream, object _object)
+		
+		public void ApplyDeserializedResourceToObject(string resourcePath, object _object)
 		{
 			try
 			{
-				StreamReader reader = new StreamReader(stream);
-				string JSON = reader.ReadToEnd();
+				TextAsset textAsset = Resources.Load(resourcePath) as TextAsset;
+				if (textAsset == null)
+				{ return; }
+				string JSON = textAsset.text;
 				JsonUtility.FromJsonOverwrite(JSON, _object);
 			}
 			catch (Exception exception)

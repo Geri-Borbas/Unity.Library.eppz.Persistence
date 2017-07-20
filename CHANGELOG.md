@@ -1,5 +1,18 @@
 # eppz.Persistence
 
+* 0.4.0
+
+	+ Grouped file system helpers to `Files`
+	+ Serialization
+		+ Changes extension using `Path.ChangeExtension()`
+		+ Removed `Stream` deserialization (considered internal)
+		+ Added deserialization as resource from `Resources` (considered external counterpart of `Stream` serialization)
+		+ See `DeserializeFile`, `DeserializeResource` and `DeserializeFileOrResource`
+	+ `JSONSerializer`
+		+ Implemented the above
+		+ Covered with tests (except `DeserializeFileOrResource`)
+			+ Using `OneTimeTearDown` instead `TearDown` fix
+
 * 0.3.51
 	
 	+ Create temp folder if not yet exist

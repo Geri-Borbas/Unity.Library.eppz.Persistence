@@ -6,6 +6,7 @@
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using UnityEngine;
+using UnityEditor;
 
 using System.IO;
 using NUnit.Framework;
@@ -15,11 +16,63 @@ namespace EPPZ.Persistence
 {
 
 
-	public static class Assertation
+	public static class Files
 	{
 
 
-		public static void AreFilesEqual(string path_a, string path_b)
+        public static void CreateFolder(string path)
+        { CreateFolderIfNotExist(path); }
+
+		public static void CreateFolderIfNotExist(string path)
+		{
+			if (!Directory.Exists(path))
+            { Directory.CreateDirectory(path); }	
+		}
+
+        public static void Copy(string from, string to)
+        { CopyFileIfNotExist(from, to); }
+
+		public static void CopyFileIfNotExist(string from, string to)
+		{
+			if (!File.Exists(from)) return;
+			if (File.Exists(to)) return;
+			File.Copy(from, to);
+		}
+
+        public static void Delete(string path)
+        { DeleteFileIfExists(path); }
+
+		public static void DeleteFileIfExists(string path)
+		{
+			if (!File.Exists(path)) return;
+			File.Delete(path);
+		}
+
+        public static void DeleteAsset(string assetPath)
+        { DeleteAssetIfExists(assetPath); }
+
+		public static void DeleteAssetIfExists(string assetPath)
+		{
+			if (!File.Exists(assetPath)) return;
+			AssetDatabase.DeleteAsset(assetPath);
+		}
+
+		public static void DeleteFolderIfEmpty(string path)
+		{
+			if (!Directory.Exists(path)) return; // Only directory if exists at all
+			
+			// Get a fresh directory info.
+			DirectoryInfo directoryInfo = new DirectoryInfo(path);
+			directoryInfo.Refresh();
+			int fileCount = directoryInfo.GetFiles().Length;		
+			int directoryCount = directoryInfo.GetDirectories().Length;			
+
+			if (fileCount > 0) return; // Only if no files within
+			if (directoryCount > 0) return; // Only if no folders within
+			Directory.Delete(path);
+		}
+
+		public static void AreEqual(string path_a, string path_b)
         {
             using (StreamReader stream_a = File.OpenText(path_a))
             {

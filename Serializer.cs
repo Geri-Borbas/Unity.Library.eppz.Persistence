@@ -19,11 +19,12 @@ namespace EPPZ.Persistence
     public class Serializer
     {
         
+		public bool log;
 
 	#region Aliases
 
 		public string GetFilePathWithExtension(string filePath)
-		{ return filePath + "." + Extension; }
+		{ return Path.ChangeExtension(filePath, Extension); }
 
         public bool IsFileExist(string filePath)
 		{ return File.Exists(GetFilePathWithExtension(filePath)); }
@@ -39,11 +40,28 @@ namespace EPPZ.Persistence
 		public T StringToObject<T>(string _string)
 		{ return DeserializeString<T>(_string); }
 
+		/// <summary>
+		/// Uses `System.IO.File.ReadAllText` to load file content.
+		/// </summary>
+		/// <param name="filePath">Absolute file system path of file.</param>
 		public T FileToObject<T>(string filePath)
 		{ return DeserializeFile<T>(filePath); }
 
-		public T StreamToObject<T>(Stream stream)
-		{ return DeserializeStream<T>(stream); }
+		/// <summary>
+		/// Uses `UnityEngine.Resource.Load` to load file content.
+		/// </summary>
+		/// <param name="resourcePath">Path of resource relative to `Assets/Resources` folder of project.</param>
+		public T ResourceToObject<T>(string resourcePath)
+		{ return DeserializeResource<T>(resourcePath); }
+
+		/// <summary>
+		/// Lookup absolute `filePath` first, then `resourcePath` in resources.
+		/// Useful when providing defaults for files in `Assets/Resources`.
+		/// </summary>
+		/// <param name="filePath">Absolute file system path of file.</param>
+		/// <param name="resourcePath">Path of resource relative to `Assets/Resources` folder of project.</param>
+		public T FileOrResourceToObject<T>(string filePath, string resourcePath)
+		{ return DeserializeFileOrResource<T>(filePath, resourcePath); }
 
 	#endregion
 
@@ -53,11 +71,13 @@ namespace EPPZ.Persistence
 		public virtual string Extension
 		{ get { return null; } }
 
+
 		public virtual string SerializeObjectToString(object _object)
 		{ return null; }
 
 		public virtual void SerializeObjectToFile(object _object, string filePath)
 		{ return; }
+
 
 		public virtual T DeserializeString<T>(string _string)
 		{ return default(T); }
@@ -65,8 +85,34 @@ namespace EPPZ.Persistence
 		public virtual T DeserializeFile<T>(string filePath)
 		{ return default(T); }
 
-		public virtual T DeserializeStream<T>(Stream stream)
+		public virtual T DeserializeResource<T>(string resourcePath)
 		{ return default(T); }
+
+		public virtual T DeserializeFileOrResource<T>(string filePath, string resourcePath)
+		{
+			T _object = default(T);
+
+			_object = DeserializeFile<T>(filePath);
+			if (_object == null)
+			{
+				Warning("Can't find file `" + filePath + "`.");
+				Log("Load `" + resourcePath + "` as resource.");
+				_object = DeserializeResource<T>(resourcePath);
+				if (_object == null)
+				{ Warning("Can't find resource `" + resourcePath + "`."); }
+			}
+			else
+			{ Log("Load `" + filePath + "` as file."); }
+
+			return _object;
+		}
+
+		void Log(string message)
+		{ if (log) Debug.Log(message); }
+
+		void Warning(string message)
+		{ if (log) Debug.LogWarning(message); }
+
 
 	#endregion
 	

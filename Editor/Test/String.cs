@@ -18,12 +18,12 @@ namespace EPPZ.Persistence.Editor.Test
 	{
 
 
-		[SetUp]
+		[OneTimeSetUp]
 		public void Setup()
 		{ }
 
-		[TearDown]
-		public void TeaerDown()
+		[OneTimeTearDown]
+		public void TearDown()
 		{ }
 
 		[Test]
