@@ -30,30 +30,46 @@ namespace EPPZ.Persistence.Editor.Test
 		EPPZ.Persistence.JSONSerializer jsonSerializer
 		{ get { return serializer as EPPZ.Persistence.JSONSerializer; } }
 
-		string first_JSON, second_JSON, third_JSON, fourth_JSON;
-
 
 		[OneTimeSetUp]
-		public void Setup()
+		public override void Setup()
 		{
+			base.Setup();
+
+			// Instance.
 			serializer = new EPPZ.Persistence.JSONSerializer();
 
-			_Setup_Folders();
-			_Setup_Models();
-
-			// JSON representation (escaped double quotes).
-			first_JSON = "{\"ID\":1,\"name\":\"First\",\"payloads\":[{\"ID\":1,\"name\":\"Alpha\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
-			second_JSON = "{\"ID\":2,\"name\":\"Second\",\"payloads\":[{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
-			third_JSON = "{\"ID\":3,\"name\":\"Third\",\"payloads\":[{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
-			fourth_JSON = "{\"ID\":4,\"name\":\"Fourth\",\"payloads\":[]}";
-
+			// JSON representation strings (escaped double quotes).
 			first_string = "{\"ID\":1,\"name\":\"First\",\"payloads\":[{\"ID\":1,\"name\":\"Alpha\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
 			second_string = "{\"ID\":2,\"name\":\"Second\",\"payloads\":[{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
 			third_string = "{\"ID\":3,\"name\":\"Third\",\"payloads\":[{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
 			fourth_string = "{\"ID\":4,\"name\":\"Fourth\",\"payloads\":[]}";
 
-			// _RecreateTestFiles();
-			_Setup_Resources();
+			// Resources.
+			Files.Copy(
+				testFolderPath + "first.json",
+				resourcesFolderPath + "first.json"
+			);
+
+			Files.Copy(
+				testFolderPath + "second.json",
+				resourcesFolderPath + "second.json"
+			);
+
+			Files.Copy(
+				testFolderPath + "third.json",
+				resourcesFolderPath + "third.json"
+			);
+
+			Files.Copy(
+				testFolderPath + "fourth.json",
+				resourcesFolderPath + "fourth.json"
+			);
+
+			AssetDatabase.ImportAsset("Assets/Resources/first.json");
+			AssetDatabase.ImportAsset("Assets/Resources/second.json");
+			AssetDatabase.ImportAsset("Assets/Resources/third.json");
+			AssetDatabase.ImportAsset("Assets/Resources/fourth.json");
 		}
 
 		void _RecreateTestFiles()
@@ -66,7 +82,25 @@ namespace EPPZ.Persistence.Editor.Test
 
 		[OneTimeTearDown]
 		public void TearDown()
-		{ _TearDown_Resources(); }
+		{ 
+			// Resources.
+			Files.DeleteAsset("Assets/Resources/first.json");
+			Files.DeleteAsset("Assets/Resources/second.json");
+			Files.DeleteAsset("Assets/Resources/third.json");
+			Files.DeleteAsset("Assets/Resources/fourth.json");
+
+			Files.DeleteAsset("Assets/Resources/first_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/second_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/third_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/fourth_test_pretty.json");
+
+			Files.DeleteAsset("Assets/Resources/first_test.json");
+			Files.DeleteAsset("Assets/Resources/second_test.json");
+			Files.DeleteAsset("Assets/Resources/third_test.json");
+			Files.DeleteAsset("Assets/Resources/fourth_test.json");
+
+			Files.DeleteFolderIfEmpty(resourcesFolderPath);
+		}
 
 
 	#region String
@@ -150,84 +184,37 @@ namespace EPPZ.Persistence.Editor.Test
 		[Test]
 		public void ObjectToFile_Pretty()
 		{
-			jsonSerializer.ObjectToFile(first, tempFolderPath+"first_test_pretty", Mode.Pretty);
+			jsonSerializer.Pretty().ObjectToFile(first, tempFolderPath+"first_test_pretty");
 			Files.AreEqual(
 				testFolderPath+"first.json",
 				tempFolderPath+"first_test_pretty.json"
 			);
 
-			jsonSerializer.ObjectToFile(second, tempFolderPath+"second_test_pretty", Mode.Pretty);
+			jsonSerializer.Pretty().ObjectToFile(second, tempFolderPath+"second_test_pretty");
 			Files.AreEqual(
 				testFolderPath+"second.json",
 				tempFolderPath+"second_test_pretty.json"
 			);
 
-			jsonSerializer.ObjectToFile(third, tempFolderPath+"third_test_pretty", Mode.Pretty);
+			jsonSerializer.Pretty().ObjectToFile(third, tempFolderPath+"third_test_pretty");
 			Files.AreEqual(
 				testFolderPath+"third.json",
 				tempFolderPath+"third_test_pretty.json"
 			);
 
-			jsonSerializer.ObjectToFile(fourth, tempFolderPath+"fourth_test_pretty", Mode.Pretty);
+			jsonSerializer.Pretty().ObjectToFile(fourth, tempFolderPath+"fourth_test_pretty");
 			Files.AreEqual(
 				testFolderPath+"fourth.json",
 				tempFolderPath+"fourth_test_pretty.json"
 			);
+
+			jsonSerializer.Default();
 		}
 
 	#endregion
 	
 
 	#region Resource
-
-		void _Setup_Resources()
-		{
-			Files.Copy(
-				testFolderPath + "first.json",
-				resourcesFolderPath + "first.json"
-			);
-
-			Files.Copy(
-				testFolderPath + "second.json",
-				resourcesFolderPath + "second.json"
-			);
-
-			Files.Copy(
-				testFolderPath + "third.json",
-				resourcesFolderPath + "third.json"
-			);
-
-			Files.Copy(
-				testFolderPath + "fourth.json",
-				resourcesFolderPath + "fourth.json"
-			);
-
-			AssetDatabase.ImportAsset("Assets/Resources/first.json");
-			AssetDatabase.ImportAsset("Assets/Resources/second.json");
-			AssetDatabase.ImportAsset("Assets/Resources/third.json");
-			AssetDatabase.ImportAsset("Assets/Resources/fourth.json");
-
-		}
-
-		void _TearDown_Resources()
-		{
-			Files.DeleteAsset("Assets/Resources/first.json");
-			Files.DeleteAsset("Assets/Resources/second.json");
-			Files.DeleteAsset("Assets/Resources/third.json");
-			Files.DeleteAsset("Assets/Resources/fourth.json");
-
-			Files.DeleteAsset("Assets/Resources/first_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/second_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/third_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/fourth_test_pretty.json");
-
-			Files.DeleteAsset("Assets/Resources/first_test.json");
-			Files.DeleteAsset("Assets/Resources/second_test.json");
-			Files.DeleteAsset("Assets/Resources/third_test.json");
-			Files.DeleteAsset("Assets/Resources/fourth_test.json");
-
-			Files.DeleteFolderIfEmpty(resourcesFolderPath);
-		}
 
 		[Test]
 		public void ApplyResourceTo()
@@ -263,74 +250,6 @@ namespace EPPZ.Persistence.Editor.Test
 			Assert.AreEqual(
 				empty,
 				fourth
-			);
-		}
-
-		[Test]
-		public void ObjectToResource()
-		{			
-			// Write to `Assets/Resources`, import, then read back as resource (using `UnityEngine.Resources`).
-			serializer.ObjectToFile(first, resourcesFolderPath + "first_test");
-			AssetDatabase.ImportAsset("Assets/Resources/first_test.json");
-			Assert.AreEqual(
-				first_string,
-				(Resources.Load("first_test") as TextAsset).text
-			);
-
-			serializer.ObjectToFile(second, resourcesFolderPath + "second_test");
-			AssetDatabase.ImportAsset("Assets/Resources/second_test.json");
-			Assert.AreEqual(
-				second_string,
-				(Resources.Load("second_test") as TextAsset).text
-			);
-
-			serializer.ObjectToFile(third, resourcesFolderPath + "third_test");
-			AssetDatabase.ImportAsset("Assets/Resources/third_test.json");
-			Assert.AreEqual(
-				third_string,
-				(Resources.Load("third_test") as TextAsset).text
-			);
-
-			serializer.ObjectToFile(fourth, resourcesFolderPath + "fourth_test");
-			AssetDatabase.ImportAsset("Assets/Resources/fourth_test.json");
-			Assert.AreEqual(
-				fourth_string,
-				(Resources.Load("fourth_test") as TextAsset).text
-			);
-		}
-
-	#endregion
-
-
-	#region File or Resource
-
-		[Test]
-		public void FileOrResourceToObject()
-		{
-			// Load file if available.
-			Assert.AreEqual(
-				serializer.FileOrResourceToObject<Entity>(
-					testFolderPath+"first",
-					"<ERROR>"
-				),
-				first
-			);
-
-			// Load resource if no file available.
-			Assert.AreEqual(
-				serializer.FileOrResourceToObject<Entity>(
-					"<ERROR>",
-					"first"
-				),
-				first
-			);
-
-			// Error.
-			Assert.IsNull(
-				serializer.FileOrResourceToObject<Entity>(
-					"<ERROR>",
-					"<ERROR>"
-				)
 			);
 		}
 

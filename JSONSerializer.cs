@@ -20,9 +20,27 @@ namespace EPPZ.Persistence
     {
 
 
-	#region Aliases
+	#region Mode
 
 		public enum Mode { Default, Pretty }
+		public Mode mode;
+		
+		public Serializer Pretty()
+		{
+			mode = Mode.Pretty;
+			return this;
+		}
+		
+		public Serializer Default()
+		{
+			mode = Mode.Default;
+			return this;
+		}
+
+	#endregion
+
+
+	#region Aliases
 
 		public void ApplyStringTo(string _string, object _object)
 		{ ApplyDeserializedStringToObject(_string, _object); }
@@ -32,9 +50,6 @@ namespace EPPZ.Persistence
 
 		public void ApplyResourceTo(string resourcePath, object _object)
 		{ ApplyDeserializedResourceToObject(resourcePath, _object); }
-
-		public void ObjectToFile(object _object, string filePath, Mode mode)
-		{ SerializeObjectToFile(_object, filePath, mode); }
 
 	#endregion
 
@@ -50,9 +65,6 @@ namespace EPPZ.Persistence
 	#region String
 
 		public override string SerializeObjectToString(object _object)
-		{ return SerializeObjectToString(_object, Mode.Default); }
-
-		public string SerializeObjectToString(object _object, Mode mode)
 		{ return JsonUtility.ToJson(_object, (mode == Mode.Pretty)); }
 
 		public override T DeserializeString<T>(string _string)
@@ -80,9 +92,6 @@ namespace EPPZ.Persistence
 	#region File
 
 		public override void SerializeObjectToFile(object _object, string filePath)
-		{ SerializeObjectToFile(_object, filePath, Mode.Default); }
-
-		public void SerializeObjectToFile(object _object, string filePath, Mode mode)
 		{
 			string JSON = JsonUtility.ToJson(_object, (mode == Mode.Pretty));
 			File.WriteAllText(GetFilePathWithExtension(filePath), JSON);	

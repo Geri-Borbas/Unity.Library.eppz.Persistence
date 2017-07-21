@@ -1,5 +1,18 @@
 # eppz.Persistence
 
+* 0.4.5
+
+	+ Resource tests moved up to `Serializer` as well
+	+ `String` extensions
+		+ Added `String.WithExtension(serializer)`
+		+ Added `String.Bytes()`
+			+ And `byte[].String()` counterpart
+	+ `Serializer` one time setup implemented at `Serializer.Setup()`
+		+ Subclasses should call `base.Setup()`
+	+ `JSONSerializer.mode`
+		+ A public property instead of parameter
+		+ Statements can be a bit more readable using `Pretty()` and `Default()`
+
 * 0.4.3
 
 	+ Common `Serializer` functionality tests got moved up to `Serializer`

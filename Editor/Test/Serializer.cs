@@ -21,9 +21,13 @@ namespace EPPZ.Persistence.Editor.Test
 	using Mode = EPPZ.Persistence.JSONSerializer.Mode;
 
 
+	/// <summary>
+	/// Being an `abstract class` tests will only run in subclasses.
+	/// </summary>
 	[TestFixture]
 	public abstract class Serializer
 	{
+
 
 		/// <summary>
 		/// Tests in this fixture covers base functionality of every `Serializer`.
@@ -41,21 +45,16 @@ namespace EPPZ.Persistence.Editor.Test
 		protected string first_string, second_string, third_string, fourth_string;
 
 
-		protected void _Setup_Folders()
+		public virtual void Setup()
 		{
+			// Folders.
 			testFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/";
 			tempFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/.temp/";
 			resourcesFolderPath = Application.dataPath + "/Resources/";
 			Files.CreateFolderIfNotExist(tempFolderPath);
 			Files.CreateFolderIfNotExist(resourcesFolderPath);
-		}
 
-
-	#region Models
-
-		protected void _Setup_Models()
-		{
-			// Object graph.
+			// Models.
 			alpha = new Payload(
 				1,
 				"Alpha",
@@ -98,6 +97,9 @@ namespace EPPZ.Persistence.Editor.Test
 				"Fourth"
 			);
 		}
+
+
+	#region Models
 
 		[Test]
 		public void PayloadEquals()
@@ -320,11 +322,11 @@ namespace EPPZ.Persistence.Editor.Test
 				tempFolderPath+"first_test."+serializer.Extension
 			);
 
-			// Any other extension gets replaced silently.
+			// Any other extension gets replaced silently (see examples of extension appending).
 			serializer.ObjectToFile(second, tempFolderPath+"second_test.json");
 			Files.AreEqual(
-				testFolderPath+"second_test."+serializer.Extension,
-				tempFolderPath+"second_test."+serializer.Extension
+				testFolderPath+"second_test".WithExtension(serializer),
+				tempFolderPath+"second_test".WithExtension(serializer)
 			);
 
 			serializer.ObjectToFile(third, tempFolderPath+"third_test.zip");
@@ -369,7 +371,75 @@ namespace EPPZ.Persistence.Editor.Test
 			);
 		}
 
+		[Test]
+		public void ObjectToResource()
+		{			
+			// Write to `Assets/Resources`, import, then read back as resource (using `UnityEngine.Resources`).
+			serializer.ObjectToFile(first, resourcesFolderPath + "first_test");
+			AssetDatabase.ImportAsset("Assets/Resources/first_test".WithExtension(serializer));
+			Assert.AreEqual(
+				first_string.Bytes(),
+				(Resources.Load("first_test") as TextAsset).bytes
+			);
+
+			serializer.ObjectToFile(second, resourcesFolderPath + "second_test");
+			AssetDatabase.ImportAsset("Assets/Resources/second_test".WithExtension(serializer));
+			Assert.AreEqual(
+				second_string.Bytes(),
+				(Resources.Load("second_test") as TextAsset).bytes
+			);
+
+			serializer.ObjectToFile(third, resourcesFolderPath + "third_test");
+			AssetDatabase.ImportAsset("Assets/Resources/third_test".WithExtension(serializer));
+			Assert.AreEqual(
+				third_string.Bytes(),
+				(Resources.Load("third_test") as TextAsset).bytes
+			);
+
+			serializer.ObjectToFile(fourth, resourcesFolderPath + "fourth_test");
+			AssetDatabase.ImportAsset("Assets/Resources/fourth_test".WithExtension(serializer));
+			Assert.AreEqual(
+				fourth_string.Bytes(),
+				(Resources.Load("fourth_test") as TextAsset).bytes
+			);
+		}
+
 	#endregion
+
+
+	#region File or Resource
+
+		[Test]
+		public void FileOrResourceToObject()
+		{
+			// Load file if available.
+			Assert.AreEqual(
+				serializer.FileOrResourceToObject<Entity>(
+					testFolderPath+"first",
+					"<ERROR>"
+				),
+				first
+			);
+
+			// Load resource if no file available.
+			Assert.AreEqual(
+				serializer.FileOrResourceToObject<Entity>(
+					"<ERROR>",
+					"first"
+				),
+				first
+			);
+
+			// Error.
+			Assert.IsNull(
+				serializer.FileOrResourceToObject<Entity>(
+					"<ERROR>",
+					"<ERROR>"
+				)
+			);
+		}
+
+	#endregion	
 
 
 	}
