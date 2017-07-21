@@ -1,5 +1,13 @@
 # eppz.Persistence
 
+* 0.4.6
+
+	+ Conversion between `String` and `byte[]`
+		+ Added `String.Base64Bytes()`
+		+ Added `byte[].StringFromBase64()`
+	+ `String.Unzip()` fix
+		+ Used Base64 accordingly
+
 * 0.4.51
 
 	+ Fixes

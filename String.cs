@@ -18,11 +18,23 @@ namespace EPPZ.Persistence
 {
 
 
-	public static class Bytes
+	public static class Bytes_Extensions
 	{
+
+
+		/// <summary>
+		/// Get string from UTF8 bytes.
+		/// </summary>
 		public static string String(this byte[] this_)
+		{ return Encoding.UTF8.GetString(this_); }
+
+		/// <summary>
+		/// Get string from Base64 bytes.
+		/// </summary>
+		public static string StringFromBase64(this byte[] this_)
 		{ return Convert.ToBase64String(this_); }
 	}
+
 
 	public static class String
 	{
@@ -45,14 +57,26 @@ namespace EPPZ.Persistence
 		public static string WithExtension(this string this_, Serializer serializer)
 		{ return serializer.GetFilePathWithExtension(this_); }
 
+		/// <summary>
+		/// Get UTF8 bytes from string.
+		/// </summary>
 		public static byte[] Bytes(this string this_)
 		{ return Encoding.UTF8.GetBytes(this_); }
 
+		/// <summary>
+		/// Get Base64 bytes from string.
+		/// </summary>
+		public static byte[] Base64Bytes(this string this_)
+		{ return Convert.FromBase64String(this_); }
+
+		public static string StringFromBytes(byte[] bytes)
+		{ return Convert.ToBase64String(bytes); }
+
 		public static string Zip(this string this_)
-		{ return CompressBytes(this_.Bytes()).String(); }
+		{ return CompressBytes(this_.Bytes()).StringFromBase64(); }
 
 		public static string Unzip(this string this_)
-		{ return DecompressBytes(this_.Bytes()).String(); }
+		{ return DecompressBytes(this_.Base64Bytes()).String(); }
 
 		static byte[] CompressBytes(byte[] inputBytes)
 		{
