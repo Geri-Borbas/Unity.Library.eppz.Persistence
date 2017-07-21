@@ -1,5 +1,9 @@
 # eppz.Persistence
 
+* 0.4.51
+
+	+ Fixes
+
 * 0.4.5
 
 	+ Resource tests moved up to `Serializer` as well

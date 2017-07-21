@@ -74,10 +74,11 @@ namespace EPPZ.Persistence.Editor.Test
 
 		void _RecreateTestFiles()
 		{
-			jsonSerializer.SerializeObjectToFile(first, testFolderPath + "first", Mode.Pretty);
-			jsonSerializer.SerializeObjectToFile(second, testFolderPath + "second", Mode.Pretty);
-			jsonSerializer.SerializeObjectToFile(third, testFolderPath + "third", Mode.Pretty);
-			jsonSerializer.SerializeObjectToFile(fourth, testFolderPath + "fourth", Mode.Pretty);	
+			jsonSerializer.Pretty().ObjectToFile(first, testFolderPath + "first");
+			jsonSerializer.Pretty().ObjectToFile(second, testFolderPath + "second");
+			jsonSerializer.Pretty().ObjectToFile(third, testFolderPath + "third");
+			jsonSerializer.Pretty().ObjectToFile(fourth, testFolderPath + "fourth");	
+			jsonSerializer.Default();
 		}
 
 		[OneTimeTearDown]
