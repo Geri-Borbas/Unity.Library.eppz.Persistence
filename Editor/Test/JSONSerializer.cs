@@ -159,6 +159,24 @@ namespace EPPZ.Persistence.Editor.Test
 				third,
 				third
 			);
+
+			// `null` payloads.
+			Assert.AreEqual(
+				new Entity(0, "Empty"),
+				new Entity(0, "Empty")
+			);
+
+			// `null` payloads.
+			Assert.AreNotEqual(
+				new Entity(3, "Third", new Payload(3, "Gamma", 0,1,2,3,4,5,6,7,8,9)),
+				new Entity(0, "Empty")
+			);
+
+			// `null` payloads.
+			Assert.AreNotEqual(
+				new Entity(0, "Empty"),
+				new Entity(3, "Third", new Payload(3, "Gamma", 0,1,2,3,4,5,6,7,8,9))
+			);
 		}
 
 	#endregion
@@ -184,6 +202,45 @@ namespace EPPZ.Persistence.Editor.Test
 				third
 			);
 
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(fourth_JSON),
+				fourth
+			);
+
+			// Error.
+			Assert.IsNull(
+				serializer.StringToObject<Entity>("<ERROR>")
+			);
+		}
+
+		[Test]
+		public void ApplyStringTo()
+		{
+			// Modify partial data.
+			serializer.ApplyStringTo("{\"payloads\":[]}", third);
+			serializer.ApplyStringTo("{\"ID\":3,\"name\":\"Third\"}", fourth);
+
+			Assert.AreEqual(
+				third,
+				fourth
+			);
+
+			// Revert changes using `ApplyStringTo()`.
+			serializer.ApplyStringTo(third_JSON, third);
+			serializer.ApplyStringTo(fourth_JSON, fourth);
+
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(third_JSON),
+				third
+			);
+
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(fourth_JSON),
+				fourth
+			);
+
+			// Error.
+			serializer.ApplyStringTo("<ERROR>", fourth);
 			Assert.AreEqual(
 				serializer.StringToObject<Entity>(fourth_JSON),
 				fourth
@@ -240,6 +297,76 @@ namespace EPPZ.Persistence.Editor.Test
 				serializer.FileToObject<Entity>(testFolderPath+"fourth"),
 				fourth
 			);
+
+			// Error.
+			Assert.IsNull(
+				serializer.FileToObject<Entity>("<ERROR>")
+			);
+		}
+
+		[Test]
+		public void ApplyFileTo()
+		{
+			Entity empty = new Entity();
+
+			serializer.ApplyFileTo(testFolderPath+"first", empty);
+			Assert.AreEqual(
+				empty,
+				first
+			);
+
+			serializer.ApplyFileTo(testFolderPath+"second", empty);
+			Assert.AreEqual(
+				empty,
+				second
+			);
+
+			serializer.ApplyFileTo(testFolderPath+"third", empty);
+			Assert.AreEqual(
+				empty,
+				third
+			);
+
+			serializer.ApplyFileTo(testFolderPath+"fourth", empty);
+			Assert.AreEqual(
+				empty,
+				fourth
+			);
+
+			// Error.
+			serializer.ApplyFileTo("<ERROR>", empty);
+			Assert.AreEqual(
+				empty,
+				fourth
+			);
+		}
+
+		[Test]
+		public void FileToObject_Extensions()
+		{
+			// Extension gets added silently (See `Serializer.GetFilePathWithExtension()`).
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath+"first"),
+				first
+			);
+
+			// Redundant `json` extension gets replaced silently.
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath+"second.json"),
+				second
+			);
+
+			// Wrong `xml` extension gets replaced silently.
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath+"third.xml"),
+				third
+			);
+
+			// Wrong `bytes` extension gets replaced silently.
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath+"fourth.bytes"),
+				fourth
+			);
 		}
 
 		[Test]
@@ -269,6 +396,38 @@ namespace EPPZ.Persistence.Editor.Test
 				tempFolderPath+"fourth_test_pretty.json"
 			);
 		}
+
+		[Test]
+		public void ObjectToFile_Extensions()
+		{
+			// Extension gets added silently (See `Serializer.GetFilePathWithExtension()`).
+			serializer.ObjectToFile(first, tempFolderPath+"first_test_pretty", Mode.Pretty);
+			Files.AreEqual(
+				testFolderPath+"first.json",
+				tempFolderPath+"first_test_pretty.json"
+			);
+
+			// Redundant `json` extension gets replaced silently.
+			serializer.ObjectToFile(second, tempFolderPath+"second_test_pretty.json", Mode.Pretty);
+			Files.AreEqual(
+				testFolderPath+"second.json",
+				tempFolderPath+"second_test_pretty.json"
+			);
+
+			// Wrong `xml` extension gets replaced silently.
+			serializer.ObjectToFile(third, tempFolderPath+"third_test_pretty.xml", Mode.Pretty);
+			Files.AreEqual(
+				testFolderPath+"third.json",
+				tempFolderPath+"third_test_pretty.json"
+			);
+
+			// Wrong `bytes` extension gets replaced silently.
+			serializer.ObjectToFile(fourth, tempFolderPath+"fourth_test_pretty.bytes", Mode.Pretty);
+			Files.AreEqual(
+				testFolderPath+"fourth.json",
+				tempFolderPath+"fourth_test_pretty.json"
+			);
+		}			
 
 		[Test]
 		public void ObjectToFile_Default()
@@ -376,6 +535,45 @@ namespace EPPZ.Persistence.Editor.Test
 			Assert.AreEqual(
 				fourth,
 				serializer.ResourceToObject<Entity>("fourth")
+			);
+		}
+
+
+
+		[Test]
+		public void ApplyResourceTo()
+		{
+			Entity empty = new Entity();
+
+			serializer.ApplyResourceTo("first", empty);
+			Assert.AreEqual(
+				empty,
+				first
+			);
+
+			serializer.ApplyResourceTo("second", empty);
+			Assert.AreEqual(
+				empty,
+				second
+			);
+
+			serializer.ApplyResourceTo("third", empty);
+			Assert.AreEqual(
+				empty,
+				third
+			);
+
+			serializer.ApplyResourceTo("fourth", empty);
+			Assert.AreEqual(
+				empty,
+				fourth
+			);
+
+			// Error.
+			serializer.ApplyResourceTo("<ERROR>", empty);
+			Assert.AreEqual(
+				empty,
+				fourth
 			);
 		}
 

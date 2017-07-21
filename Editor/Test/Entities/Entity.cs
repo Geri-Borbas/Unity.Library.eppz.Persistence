@@ -23,6 +23,19 @@ namespace EPPZ.Persistence.Editor.Test.Entities
 		public List<Payload> payloads;
 
 
+		public Entity(){}
+
+		public Entity(int ID)
+		{
+			this.ID = ID;
+		}
+
+		public Entity(int ID, string name)
+		{
+			this.ID = ID;
+			this.name = name;
+		}
+
 		public Entity(int ID, string name, params Payload[] payloads)
 		{
 			this.ID = ID;
@@ -32,10 +45,12 @@ namespace EPPZ.Persistence.Editor.Test.Entities
 
 		public bool Equals(Entity other)
 		{
-			// Compare each other payloads.
-			bool payloadsEqual = true;
-			foreach (Payload eachOtherPayload in other.payloads)
-			{ payloadsEqual &= payloads.Contains(eachOtherPayload); }
+			// Compare each other payloads (considering various `null` cases).
+			bool payloadsEqual = 
+				(payloads == null && other.payloads == null) ||
+				(payloads == null && other.payloads != null && other.payloads.Count == 0) ||
+				(payloads != null && payloads.Count == 0 && other.payloads == null) ||
+				(payloads != null && other.payloads != null && System.Linq.Enumerable.SequenceEqual(payloads, other.payloads));
 
 			return (
 				this.ID == other.ID &&

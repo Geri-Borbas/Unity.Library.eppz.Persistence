@@ -1,5 +1,12 @@
 # eppz.Persistence
 
+* 0.4.2
+
+	+ More `JSONSerializer` tests
+		+ Covered errors (non-existent files, JSON errors)
+		+ Covered `Apply...` implementations
+		+ `Entity.Equals()` fix for `null` cases
+
 * 0.4.0
 
 	+ Grouped file system helpers to `Files`
