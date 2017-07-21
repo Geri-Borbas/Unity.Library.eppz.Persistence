@@ -1,5 +1,10 @@
 # eppz.Persistence
 
+* 0.4.3
+
+	+ Common `Serializer` functionality tests got moved up to `Serializer`
+		+ Same base tests can be reused with `BinarySerializer` as well
+
 * 0.4.2
 
 	+ More `JSONSerializer` tests

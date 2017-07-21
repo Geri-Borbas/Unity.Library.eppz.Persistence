@@ -19,7 +19,9 @@ namespace EPPZ.Persistence
     public class Serializer
     {
         
+
 		public bool log;
+
 
 	#region Aliases
 
