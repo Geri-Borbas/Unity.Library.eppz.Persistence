@@ -23,15 +23,15 @@ namespace EPPZ.Persistence
 
 
 		/// <summary>
-		/// Get string from UTF8 bytes.
+		/// Convert bytes to UTF8 string.
 		/// </summary>
 		public static string String(this byte[] this_)
 		{ return Encoding.UTF8.GetString(this_); }
 
 		/// <summary>
-		/// Get string from Base64 bytes.
+		/// Convert bytes to Base64 string.
 		/// </summary>
-		public static string StringFromBase64(this byte[] this_)
+		public static string Base64String(this byte[] this_)
 		{ return Convert.ToBase64String(this_); }
 	}
 
@@ -69,11 +69,8 @@ namespace EPPZ.Persistence
 		public static byte[] Base64Bytes(this string this_)
 		{ return Convert.FromBase64String(this_); }
 
-		public static string StringFromBytes(byte[] bytes)
-		{ return Convert.ToBase64String(bytes); }
-
 		public static string Zip(this string this_)
-		{ return CompressBytes(this_.Bytes()).StringFromBase64(); }
+		{ return CompressBytes(this_.Bytes()).Base64String(); }
 
 		public static string Unzip(this string this_)
 		{ return DecompressBytes(this_.Base64Bytes()).String(); }

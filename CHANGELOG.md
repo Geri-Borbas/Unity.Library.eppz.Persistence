@@ -1,5 +1,16 @@
 # eppz.Persistence
 
+* 0.4.9
+
+	+ Better assertations
+		+ Removed more JSON dependency
+		+ Use `NUnit.Framework.FileAssert` for File comparison
+		+ Use `File.ReadAllBytes` to Resource comparison
+		+ Fixed JSON test files
+			+ Made pretty formatting explicit
+	+ `BinarySerializer`
+		+ Implemented string serializations (using Base64)
+
 * 0.4.6
 
 	+ Conversion between `String` and `byte[]`

@@ -18,7 +18,6 @@ namespace EPPZ.Persistence.Editor.Test
 
 
 	using Entities;
-	using Mode = EPPZ.Persistence.JSONSerializer.Mode;
 
 
 	[TestFixture]
@@ -38,6 +37,8 @@ namespace EPPZ.Persistence.Editor.Test
 
 			// Instance.
 			serializer = new EPPZ.Persistence.JSONSerializer();
+
+			_RecreateTestFiles();
 
 			// JSON representation strings (escaped double quotes).
 			first_string = "{\"ID\":1,\"name\":\"First\",\"payloads\":[{\"ID\":1,\"name\":\"Alpha\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
@@ -74,10 +75,14 @@ namespace EPPZ.Persistence.Editor.Test
 
 		void _RecreateTestFiles()
 		{
-			jsonSerializer.Pretty().ObjectToFile(first, testFolderPath + "first");
-			jsonSerializer.Pretty().ObjectToFile(second, testFolderPath + "second");
-			jsonSerializer.Pretty().ObjectToFile(third, testFolderPath + "third");
-			jsonSerializer.Pretty().ObjectToFile(fourth, testFolderPath + "fourth");	
+			serializer.ObjectToFile(first, testFolderPath + "first");
+			serializer.ObjectToFile(second, testFolderPath + "second");
+			serializer.ObjectToFile(third, testFolderPath + "third");
+			serializer.ObjectToFile(fourth, testFolderPath + "fourth");			
+			jsonSerializer.Pretty().ObjectToFile(first, testFolderPath + "first_pretty");
+			jsonSerializer.Pretty().ObjectToFile(second, testFolderPath + "second_pretty");
+			jsonSerializer.Pretty().ObjectToFile(third, testFolderPath + "third_pretty");
+			jsonSerializer.Pretty().ObjectToFile(fourth, testFolderPath + "fourth_pretty");
 			jsonSerializer.Default();
 		}
 
@@ -90,15 +95,15 @@ namespace EPPZ.Persistence.Editor.Test
 			Files.DeleteAsset("Assets/Resources/third.json");
 			Files.DeleteAsset("Assets/Resources/fourth.json");
 
-			Files.DeleteAsset("Assets/Resources/first_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/second_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/third_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/fourth_test_pretty.json");
-
 			Files.DeleteAsset("Assets/Resources/first_test.json");
 			Files.DeleteAsset("Assets/Resources/second_test.json");
 			Files.DeleteAsset("Assets/Resources/third_test.json");
 			Files.DeleteAsset("Assets/Resources/fourth_test.json");
+
+			Files.DeleteAsset("Assets/Resources/first_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/second_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/third_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/fourth_test_pretty.json");
 
 			Files.DeleteFolderIfEmpty(resourcesFolderPath);
 		}
@@ -150,25 +155,25 @@ namespace EPPZ.Persistence.Editor.Test
 		{
 			Entity empty = new Entity();
 
-			jsonSerializer.ApplyFileTo(testFolderPath+"first", empty);
+			jsonSerializer.ApplyFileTo(testFolderPath + "first", empty);
 			Assert.AreEqual(
 				empty,
 				first
 			);
 
-			jsonSerializer.ApplyFileTo(testFolderPath+"second", empty);
+			jsonSerializer.ApplyFileTo(testFolderPath + "second", empty);
 			Assert.AreEqual(
 				empty,
 				second
 			);
 
-			jsonSerializer.ApplyFileTo(testFolderPath+"third", empty);
+			jsonSerializer.ApplyFileTo(testFolderPath + "third", empty);
 			Assert.AreEqual(
 				empty,
 				third
 			);
 
-			jsonSerializer.ApplyFileTo(testFolderPath+"fourth", empty);
+			jsonSerializer.ApplyFileTo(testFolderPath + "fourth", empty);
 			Assert.AreEqual(
 				empty,
 				fourth
@@ -185,28 +190,28 @@ namespace EPPZ.Persistence.Editor.Test
 		[Test]
 		public void ObjectToFile_Pretty()
 		{
-			jsonSerializer.Pretty().ObjectToFile(first, tempFolderPath+"first_test_pretty");
+			jsonSerializer.Pretty().ObjectToFile(first, tempFolderPath + "first_test_pretty");
 			Files.AreEqual(
-				testFolderPath+"first.json",
-				tempFolderPath+"first_test_pretty.json"
+				testFolderPath + "first_pretty.json",
+				tempFolderPath + "first_test_pretty.json"
 			);
 
-			jsonSerializer.Pretty().ObjectToFile(second, tempFolderPath+"second_test_pretty");
+			jsonSerializer.Pretty().ObjectToFile(second, tempFolderPath + "second_test_pretty");
 			Files.AreEqual(
-				testFolderPath+"second.json",
-				tempFolderPath+"second_test_pretty.json"
+				testFolderPath + "second_pretty.json",
+				tempFolderPath + "second_test_pretty.json"
 			);
 
-			jsonSerializer.Pretty().ObjectToFile(third, tempFolderPath+"third_test_pretty");
+			jsonSerializer.Pretty().ObjectToFile(third, tempFolderPath + "third_test_pretty");
 			Files.AreEqual(
-				testFolderPath+"third.json",
-				tempFolderPath+"third_test_pretty.json"
+				testFolderPath + "third_pretty.json",
+				tempFolderPath + "third_test_pretty.json"
 			);
 
-			jsonSerializer.Pretty().ObjectToFile(fourth, tempFolderPath+"fourth_test_pretty");
+			jsonSerializer.Pretty().ObjectToFile(fourth, tempFolderPath + "fourth_test_pretty");
 			Files.AreEqual(
-				testFolderPath+"fourth.json",
-				tempFolderPath+"fourth_test_pretty.json"
+				testFolderPath + "fourth_pretty.json",
+				tempFolderPath + "fourth_test_pretty.json"
 			);
 
 			jsonSerializer.Default();

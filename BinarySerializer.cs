@@ -24,7 +24,46 @@ namespace EPPZ.Persistence
 	#region Overrides
 
 		public override string Extension
-		{ get { return "data"; } }
+		{ get { return "bytes"; } }
+
+	#endregion
+
+
+	#region String
+
+		public override string SerializeObjectToString(object _object)
+		{
+ 			Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes"); // Fix iOS AOT issue
+			BinaryFormatter formatter = new BinaryFormatter();
+			using (MemoryStream stream = new MemoryStream())
+    		{
+        		formatter.Serialize(stream, _object);
+        		return stream.ToArray().Base64String();
+    		}
+		}
+
+		public override T DeserializeString<T>(string _string)
+		{ 
+			T _object = default(T);
+			try
+			{
+				Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes"); // Fix iOS AOT issue
+				using (MemoryStream stream = new MemoryStream(_string.Base64Bytes()))
+   				{
+        			BinaryFormatter formatter = new BinaryFormatter();
+        			_object = (T)formatter.Deserialize(stream);
+    			}
+			}
+			catch (Exception exception)
+			{ Debug.LogWarning("Serializer exception: "+exception); }
+
+			return _object;
+		}
+
+	#endregion
+
+
+	#region File
 
 		public override void SerializeObjectToFile(object _object, string filePath)
 		{
@@ -44,7 +83,7 @@ namespace EPPZ.Persistence
 			{
 				Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes"); // Fix iOS AOT issue
 				BinaryFormatter formatter = new BinaryFormatter();
-				FileStream file = File.Open(filePath, FileMode.Open);
+				FileStream file = File.Open(GetFilePathWithExtension(filePath), FileMode.Open);
 				_object = (T)formatter.Deserialize(file);
 				file.Close();
 			}
@@ -53,6 +92,11 @@ namespace EPPZ.Persistence
 
 			return _object;
         }
+
+	#endregion
+
+
+	#region Resource
 
 		public override T DeserializeResource<T>(string resourcePath)
 		{
