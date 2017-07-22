@@ -1,18 +1,58 @@
 # eppz.Persistence [![Build Status](https://travis-ci.org/eppz/Unity.Test.eppz.png?branch=master)](https://travis-ci.org/eppz/Unity.Test.eppz)
 > part of [**Unity.Library.eppz**](https://github.com/eppz/Unity.Library.eppz)
 
-Object serialization (Binary, JSON, GZip).
+Object serialization (Binary, JSON, GZip) wrapped up.
 
-## `String.cs` extensions
+## [`Serializer.cs`](Serializer.cs)
 
-* GZip
+A common interface to both (Binary, JSON) serializers. See editor tests at [`Editor/Test/Serializer.cs`](Editor/Test/Serializer.cs) for details (these are common tests used by both serializer), or the class itself at [`Serializer.cs`](Serializer.cs).
+
+* `ObjectToString()`
+    + Serialize an object to string.
+* `ObjectToFile()`
+    + Serialize an object to a given file.
+* `StringToObject<T>()`
+    + Deserialize a string to object.
+* `FileToObject<T>()`
+    + Deserialize a file to object.
+* `ResourceToObject<T>()`
+    + Deserialize a resource to object.
+* `FileOrResourceToObject<T>()`
+    + Deserialize a file to object, or deserialize a resource (if the file not found).
+
+## [`BinarySerializer.cs`](BinarySerializer.cs)
+
+* Wraps up `BinaryFormatter` under the hood.
+* Uses `bytes` extension (recognized as asset by Unity).
+* Base64 string interpretation.
+
+## [`JSONSerializer.cs`](JSONSerializer.cs)
+
+* Wraps up `JsonUtility` under the hood.
+* Uses `json` extension (recognized as asset by Unity).
+* JSON string interpretation.
+* Can apply sources to existing objects.
+    + `ApplyStringTo()`
+    + `ApplyFileTo()`
+	+ `ApplyResourceTo()`
+
+## [`String.cs`](String.cs) extensions
+
+* Byte conversion extensions
+    + `String` to `byte` array
+        + `String.Bytes()` (UTF8)
+        + `String.Base64Bytes()`
+    + Reverse counterparts extending `byte` arrays
+        + `byte[].String()` (UTF8)
+        + `byte[].Base64String()`
+* GZip extensions
     + Using Base64 encoding of compressed bytes.
     + Using `System.IO.Compression` classes included in Unity 5.5+ (see issue `569612` on [5.5.0f3 Release Notes](https://unity3d.com/unity/whats-new/unity-5.5.0)).
     + `Zip()`
         + `"Batman".Zip()` gives you `"H4sIAAAAAAAAA3NKLMlNzAMAOC2+JQYAAAA="`.
     + `Unzip()`
         + `"H4sIAAAAAAAAA3NKLMlNzAMAOC2+JQYAAAA=".Unzip()` gives you `"Batman"`.
-    + Can be nicely decompressed / inflated using **Javascript** (using [pako](https://github.com/nodeca/pako))
+    + Can be nicely decompressed / inflated using **Javascript** (using [pako](https://github.com/nodeca/pako)).
         + See [http://jsfiddle.net/9yH7M/845/](http://jsfiddle.net/9yH7M/845/)
     + See test cases in [`Editor/Test/String.cs`](Editor/Test/String.cs) for more.
 
