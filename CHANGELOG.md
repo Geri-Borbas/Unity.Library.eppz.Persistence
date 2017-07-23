@@ -1,5 +1,13 @@
 # eppz.Persistence
 
+* 0.5.4
+
+	+ Renamed for `String` and `Object` extensions
+		+ `SerializeToString()`
+		+ `SerializeToFileAt()`
+		+ `DeserializeToObject()`
+	+ Moved extensions to `Extensions` folder (and namespace)
+
 * 0.5.3
 
 	+ Tests for `String` and `Object` extensions

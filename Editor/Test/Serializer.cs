@@ -321,33 +321,33 @@ namespace EPPZ.Persistence.Editor.Test
 		}
 
 		[Test]
-		public void ToObject()
+		public void DeserializeToObject()
 		{
 			serializer.SetDefaultSerializer();
 
 			Assert.AreEqual(
-				first_string.ToObject<Entity>(),
+				first_string.DeserializeToObject<Entity>(),
 				first
 			);
 
 			Assert.AreEqual(
-				second_string.ToObject<Entity>(),
+				second_string.DeserializeToObject<Entity>(),
 				second
 			);
 
 			Assert.AreEqual(
-				third_string.ToObject<Entity>(),
+				third_string.DeserializeToObject<Entity>(),
 				third
 			);
 
 			Assert.AreEqual(
-				fourth_string.ToObject<Entity>(),
+				fourth_string.DeserializeToObject<Entity>(),
 				fourth
 			);
 
 			// Error.
 			Assert.IsNull(
-				"<ERROR>".ToObject<Entity>()
+				"<ERROR>".DeserializeToObject<Entity>()
 			);	
 		}
 
@@ -375,26 +375,26 @@ namespace EPPZ.Persistence.Editor.Test
 		}
 
 		[Test]
-		public void ToString()
+		public void SerializeToString()
 		{
 			serializer.SetDefaultSerializer();
 
 			Assert.AreEqual(
-				first.ToString(),
+				first.SerializeToString(),
 				first_string
 			);
 
 			Assert.AreEqual(
-				second.ToString(),
+				second.SerializeToString(),
 				second_string
 			);
 			Assert.AreEqual(
-				third.ToString(),
+				third.SerializeToString(),
 				third_string
 			);
 
 			Assert.AreEqual(
-				fourth.ToString(),
+				fourth.SerializeToString(),
 				fourth_string
 			);
 		}
@@ -462,27 +462,27 @@ namespace EPPZ.Persistence.Editor.Test
 		}
 
 		[Test]
-		public void ToFileAt()
+		public void SerializeToFileAt()
 		{			
-			fourth.ToFileAt(tempFolderPath + "first_test");
+			first.SerializeToFileAt(tempFolderPath + "first_test");
 			FileAssert.AreEqual(
 				testFolderPath + "first".WithExtension(serializer),			
 				tempFolderPath + "first_test".WithExtension(serializer)
 			);
 
-			fourth.ToFileAt(tempFolderPath + "second_test");
+			second.SerializeToFileAt(tempFolderPath + "second_test");
 			FileAssert.AreEqual(
 				testFolderPath + "second".WithExtension(serializer),			
 				tempFolderPath + "second_test".WithExtension(serializer)
 			);
 
-			fourth.ToFileAt(tempFolderPath + "third_test");
+			third.SerializeToFileAt(tempFolderPath + "third_test");
 			FileAssert.AreEqual(
 				testFolderPath + "third".WithExtension(serializer),			
 				tempFolderPath + "third_test".WithExtension(serializer)
 			);
 
-			fourth.ToFileAt(tempFolderPath + "fourth_test");
+			fourth.SerializeToFileAt(tempFolderPath + "fourth_test");
 			FileAssert.AreEqual(
 				testFolderPath + "fourth".WithExtension(serializer),			
 				tempFolderPath + "fourth_test".WithExtension(serializer)

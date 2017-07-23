@@ -22,10 +22,10 @@ namespace EPPZ.Persistence
 	{
 
 
-		public static string ToString(this object this_, Serializer serializer = null)
+		public static string SerializeToString(this object this_, Serializer serializer = null)
 		{ return Serializer.SerializerOrDefault(serializer).ObjectToString(this_); }
 
-		public static void ToFileAt(this object this_, string filePath, Serializer serializer = null)
+		public static void SerializeToFileAt(this object this_, string filePath, Serializer serializer = null)
 		{ Serializer.SerializerOrDefault(serializer).ObjectToFile(this_, filePath); }
 	}
 }

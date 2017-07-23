@@ -34,7 +34,7 @@ namespace EPPZ.Persistence
 		/// <summary>
 		/// An alias to `Serializer.StringToObject()`.
 		/// </summary>
-		public static T ToObject<T>(this string this_, Serializer serializer = null)
+		public static T DeserializeToObject<T>(this string this_, Serializer serializer = null)
 		{ return Serializer.SerializerOrDefault(serializer).StringToObject<T>(this_); }
 
 	#endregion
