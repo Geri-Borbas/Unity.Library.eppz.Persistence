@@ -1,7 +1,7 @@
 # eppz.Persistence [![Build Status](https://travis-ci.org/eppz/Unity.Test.eppz.png?branch=master)](https://travis-ci.org/eppz/Unity.Test.eppz)
 > part of [**Unity.Library.eppz**](https://github.com/eppz/Unity.Library.eppz)
 
-Object serialization (Binary, JSON, Gzip) wrapped up for the everyday.
+📦 Object serialization (Binary, JSON, Gzip) wrapped up for the everyday.
 
 ```csharp
 // Object To JSON.
