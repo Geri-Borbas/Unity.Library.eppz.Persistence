@@ -18,6 +18,7 @@ namespace EPPZ.Persistence.Editor.Test
 
 
 	using Entities;
+	using Extensions;
 	using Mode = EPPZ.Persistence.JSONSerializer.Mode;
 
 

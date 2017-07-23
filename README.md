@@ -1,7 +1,50 @@
 # eppz.Persistence [![Build Status](https://travis-ci.org/eppz/Unity.Test.eppz.png?branch=master)](https://travis-ci.org/eppz/Unity.Test.eppz)
 > part of [**Unity.Library.eppz**](https://github.com/eppz/Unity.Library.eppz)
 
-Object serialization (Binary, JSON, GZip) wrapped up.
+Object serialization (Binary, JSON, Gzip) wrapped up for the everyday.
+
+```
+// Object To JSON.
+string JSON = object.SerializeToString();
+
+// Object to JSON with Gzip.
+string ZIP = object.SerializeToString().Zip();
+
+// Object to a JSON file (using `json` extension).
+object.SerializeToFileAt(Application.persistentDataPath + "object");
+
+// Or the same with `BinarySerializer`.
+binarySerializer.SetDefaultSerializer();
+
+// Object To Binray (as Base64 string).
+string Base64 = object.SerializeToString();
+
+// Object to Binray (as Gzipped Base64 string).
+string ZIP = object.SerializeToString().Zip();
+
+// Object to a Binary file (using `bytes` extension).
+object.SerializeToFileAt(Application.persistentDataPath + "object");
+
+// String to object.
+Entity object = string.DeserializeToObject<Entity>();
+
+// Gzipped string to object.
+Entity object = string.Unzip().DeserializeToObject<Entity>();
+
+// File to object (either JSON or Binary).
+Entity object = serializer.FileToObject<Entity>(Application.persistentDataPath + "object");
+
+// Resource to object (either JSON or Binary).
+Entity object = serializer.ResourceToObject<Entity>(Application.persistentDataPath + "object");
+
+// File or resource to object (either JSON or Binary).
+Entity object = serializer.FileOrResourceToObject<Entity>(
+    Application.persistentDataPath + "object",
+    "object"
+);
+```
+
+> 💡 See editor test fixture at [`Editor/Test/Serializer.cs`](Editor/Test/Serializer.cs) for details.
 
 ## [`Serializer.cs`](Serializer.cs)
 
@@ -33,19 +76,20 @@ A common interface to both (Binary, JSON) serializers. See editor tests at [`Edi
 * JSON string interpretation.
 * Can apply sources to existing objects.
     + `ApplyStringTo()`
+        + Deserialize a string to an existing object.
     + `ApplyFileTo()`
+        + Deserialize a file to an extisting object.
 	+ `ApplyResourceTo()`
+        + Deserialize a resource to an existing object.
 
-## [`String.cs`](String.cs) extensions
+## [`Extensions/String.cs`](Extensions/String.cs)
 
-* Byte conversion extensions
-    + `String` to `byte` array
-        + `String.Bytes()` (UTF8)
-        + `String.Base64Bytes()`
-    + Reverse counterparts extending `byte` arrays
-        + `byte[].String()` (UTF8)
-        + `byte[].Base64String()`
-* GZip extensions
+* Byte conversion
+    + `string` to `byte[]` array
+        + `Bytes()` (UTF8)
+        + `Base64Bytes()`
+        + See reverse counterparts in [`Extensions/Bytes.cs`](Extensions/Bytes.cs)
+* Gzip
     + Using Base64 encoding of compressed bytes.
     + Using `System.IO.Compression` classes included in Unity 5.5+ (see issue `569612` on [5.5.0f3 Release Notes](https://unity3d.com/unity/whats-new/unity-5.5.0)).
     + `Zip()`
@@ -65,7 +109,27 @@ H4sIAAAAAAAAA62UT2/UMBDFv0pvvoRoxmN7PDlzQQIOLDdUIbMbdqN6kyXJImjV784EVLF/SrUp9Smx
 ```
 {'shapeSnapshots':[{'name':'Large Triangle 1','active':true,'selected':false,'position_x':-0.10151994228363037,'position_y':-0.12396955490112305,'rotation':44.999996185302734,'locked':false,'linkedShapeNames':['Square','Middle Triangle','Large Triangle 2']},{'name':'Large Triangle 2','active':true,'selected':false,'position_x':-1.5157337188720703,'position_y':-1.5381829738616943,'rotation':315,'locked':false,'linkedShapeNames':['Square','Middle Triangle','Large Triangle 1']},{'name':'Middle Triangle','active':true,'selected':false,'position_x':-0.8086267113685608,'position_y':-0.8310763835906982,'rotation':315,'locked':false,'linkedShapeNames':['Square','Large Triangle 1','Large Triangle 2']},{'name':'Small Triangle 1','active':true,'selected':false,'position_x':0.5517618656158447,'position_y':2.267948627471924,'rotation':67.5,'locked':false,'linkedShapeNames':[]},{'name':'Small Triangle 2','active':true,'selected':false,'position_x':-0.10151970386505127,'position_y':2.7044572830200195,'rotation':135,'locked':false,'linkedShapeNames':[]},{'name':'Rhombus','active':true,'selected':false,'position_x':-1.2167412042617798,'position_y':1.2109876871109009,'rotation':157.5,'locked':false,'linkedShapeNames':[]},{'name':'Square','active':true,'selected':false,'position_x':0.3984801173210144,'position_y':-0.6239694952964783,'rotation':90,'locked':false,'linkedShapeNames':['Middle Triangle','Large Triangle 1','Large Triangle 2']}],'align':0,'puzzleID':'000011'}
 ``` 
+## [`Extensions/Bytes.cs`](Extensions/Bytes.cs)
 
+* String conversion
+    + Byte array to `string`
+        + `String()` (UTF8)
+        + `Base64String()`
+* Gzip
+    + The base of the Gzip `string` extensions above
+    + `Compress()`
+    + `Decompress()`
+
+## [`Extensions/Object.cs`](Extensions/Object.cs)
+
+* Wrapper for `Serializer` functionality.
+    + `SerializeToString()`
+	+ `SerializeToFileAt()`
+
+## [`Extensions/Stream.cs`](Extensions/Stream.cs)
+
+* A single extension to mimic a .NET 4 behaviour in .NET 2 (to be used in Gzip extensions above).
+    + `_CopyTo()`
 
 ## License
 

@@ -17,6 +17,9 @@ namespace EPPZ.Persistence
 {
 
 
+	using Extensions;
+
+
     public class BinarySerializer : Serializer
     {
         

@@ -10,14 +10,15 @@ using UnityEditor;
 
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 
 
-namespace EPPZ.Persistence
+namespace EPPZ.Persistence.Extensions
 {
 
 
-	public static class Bytes
+	public static class Bytes_Extensions
 	{
 
 
@@ -32,5 +33,37 @@ namespace EPPZ.Persistence
 		/// </summary>
 		public static string Base64String(this byte[] this_)
 		{ return Convert.ToBase64String(this_); }
+
+		/// <summary>
+		/// Compress (Gzip) byte array (using `System.IO.Compression.GZipStream`).
+		/// </summary>
+		public static byte[] Compress(this byte[] this_)
+		{
+			if (this_.Length == 0) return this_; // Only if any
+
+			using (MemoryStream inputStream = new MemoryStream(this_))
+				using (MemoryStream outputStream = new MemoryStream())
+				{
+					using (GZipStream zipStream = new GZipStream(outputStream, CompressionMode.Compress))
+					{ inputStream._CopyTo(zipStream); }
+					return outputStream.ToArray();
+				}
+		}
+
+		/// <summary>
+		/// Decompress (Gzipped) byte array (using `System.IO.Compression.GZipStream`).
+		/// </summary>
+		public static byte[] Decompress(this byte[] this_)
+		{
+			if (this_.Length == 0) return this_; // Only if any
+
+			using (MemoryStream inputStream = new MemoryStream(this_))
+    			using (MemoryStream outputStream = new MemoryStream())
+				{
+					using (GZipStream zipStream = new GZipStream(inputStream, CompressionMode.Decompress))
+					{ zipStream._CopyTo(outputStream); }
+					return outputStream.ToArray();
+				}
+		}
 	}
 }

@@ -13,6 +13,9 @@ namespace EPPZ.Persistence.Editor.Test
 {
 
 
+	using Extensions;
+
+
 	[TestFixture]
 	public class String
 	{

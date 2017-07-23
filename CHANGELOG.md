@@ -1,6 +1,6 @@
 # eppz.Persistence
 
-* 0.5.4
+* 0.5.5
 
 	+ Renamed for `String` and `Object` extensions
 		+ `SerializeToString()`

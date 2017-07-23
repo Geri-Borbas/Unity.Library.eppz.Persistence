@@ -11,14 +11,13 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Text;
-using System.IO.Compression;
 
 
-namespace EPPZ.Persistence
+namespace EPPZ.Persistence.Extensions
 {
 
 
-	public static class String
+	public static class String_Extensions
 	{
 
 
@@ -67,47 +66,10 @@ namespace EPPZ.Persistence
 	#region Zip
 
 		public static string Zip(this string this_)
-		{ return CompressBytes(this_.Bytes()).Base64String(); }
+		{ return this_.Bytes().Compress().Base64String(); }
 
 		public static string Unzip(this string this_)
-		{ return DecompressBytes(this_.Base64Bytes()).String(); }
-
-		/// <summary>
-		/// A fallback for `Stream.CopyTo()` (only introduced in .NET 4).
-		/// </summary>
-		public static void _CopyTo(this Stream this_, Stream outputStream, int bufferSize = 4096)
-        {
-            byte[] bytes = new byte[bufferSize];
-            int bytesRead;
-            while ((bytesRead = this_.Read(bytes, 0, bytes.Length)) != 0)
-            { outputStream.Write(bytes, 0, bytesRead); }
-        }
-
-		static byte[] CompressBytes(byte[] inputBytes)
-		{
-			if (inputBytes.Length == 0) return inputBytes; // Only if any
-
-			using (MemoryStream inputStream = new MemoryStream(inputBytes))
-				using (MemoryStream outputStream = new MemoryStream())
-				{
-					using (GZipStream zipStream = new GZipStream(outputStream, CompressionMode.Compress))
-					{ inputStream._CopyTo(zipStream); }
-					return outputStream.ToArray();
-				}
-		}
-
-		static byte[] DecompressBytes(byte[] inputBytes)
-		{
-			if (inputBytes.Length == 0) return inputBytes; // Only if any
-
-			using (MemoryStream inputStream = new MemoryStream(inputBytes))
-    			using (MemoryStream outputStream = new MemoryStream())
-				{
-					using (GZipStream zipStream = new GZipStream(inputStream, CompressionMode.Decompress))
-					{ zipStream._CopyTo(outputStream); }
-					return outputStream.ToArray();
-				}
-		}
+		{ return this_.Base64Bytes().Decompress().String(); }
 
 	#endregion
 
