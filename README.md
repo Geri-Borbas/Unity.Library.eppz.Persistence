@@ -3,39 +3,39 @@
 
 Object serialization (Binary, JSON, Gzip) wrapped up for the everyday.
 
-```
+```csharp
 // Object To JSON.
-string JSON = object.SerializeToString();
+string myString = myObject.SerializeToString();
 
 // Object to JSON with Gzip.
-string ZIP = object.SerializeToString().Zip();
+string myString = myObject.SerializeToString().Zip();
 
 // Object to a JSON file (using `json` extension).
-object.SerializeToFileAt(Application.persistentDataPath + "object");
+myObject.SerializeToFileAt(Application.persistentDataPath + "object");
 
 // Or the same with `BinarySerializer`.
 binarySerializer.SetDefaultSerializer();
 
-// Object To Binray (as Base64 string).
-string Base64 = object.SerializeToString();
+// Object To Binary (as Base64 string).
+string myString = myObject.SerializeToString();
 
 // Object to Binray (as Gzipped Base64 string).
-string ZIP = object.SerializeToString().Zip();
+string myString = myObject.SerializeToString().Zip();
 
 // Object to a Binary file (using `bytes` extension).
-object.SerializeToFileAt(Application.persistentDataPath + "object");
+myObject.SerializeToFileAt(Application.persistentDataPath + "object");
 
 // String to object.
-Entity object = string.DeserializeToObject<Entity>();
+Entity myObject = myString.DeserializeToObject<Entity>();
 
 // Gzipped string to object.
-Entity object = string.Unzip().DeserializeToObject<Entity>();
+Entity myObject = myString.Unzip().DeserializeToObject<Entity>();
 
 // File to object (either JSON or Binary).
-Entity object = serializer.FileToObject<Entity>(Application.persistentDataPath + "object");
+Entity myObject = serializer.FileToObject<Entity>(Application.persistentDataPath + "object");
 
 // Resource to object (either JSON or Binary).
-Entity object = serializer.ResourceToObject<Entity>(Application.persistentDataPath + "object");
+Entity myObject = serializer.ResourceToObject<Entity>(Application.persistentDataPath + "object");
 
 // File or resource to object (either JSON or Binary).
 Entity object = serializer.FileOrResourceToObject<Entity>(
