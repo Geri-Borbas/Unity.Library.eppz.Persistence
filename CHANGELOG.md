@@ -1,5 +1,19 @@
 # eppz.Persistence
 
+* 0.5.2
+
+	+ More common `Serializer` tests
+		+ `Zip()`
+		+ `Unzip()`		
+	+ `String` extensions
+		+ Added some (silent) error handling to byte operations
+		+ Extracted `Bytes` extensions
+		+ Added some basic `object` extensions
+	+ `Serializer`
+		+ Added a static singleton reference holding the default serializer
+			+ Various class extension methods can always grab a serializer here (if not defined any)
+			+ Not quiet sure if this helps at all (see `Object` extensions for usage)
+
 * 0.5.0
 
 	+ Better assertations

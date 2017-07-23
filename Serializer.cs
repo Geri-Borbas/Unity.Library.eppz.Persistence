@@ -23,6 +23,30 @@ namespace EPPZ.Persistence
 		public bool log;
 
 
+	#region Singleton
+
+		static Serializer defaultSerializer;
+
+		/// <summary>
+		/// Method that returns a `Serializer` in any way.
+		/// </summary>
+		/// <param name="serializer">Any serializer instance (or `null`).</param>
+		public static Serializer SerializerOrDefault(Serializer serializer)
+		{
+			if (serializer != null) return serializer;
+			if (defaultSerializer == null) defaultSerializer = new JSONSerializer();
+			return defaultSerializer;
+		}
+
+		/// <summary>
+		/// Sets this `Serializer` as the default.
+		/// </summary>
+		public void SetDefaultSerializer()
+		{ defaultSerializer = this; }
+
+	#endregion
+
+
 	#region Aliases
 
 		public string GetFilePathWithExtension(string filePath)

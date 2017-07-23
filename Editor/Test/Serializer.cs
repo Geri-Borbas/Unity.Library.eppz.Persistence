@@ -42,7 +42,16 @@ namespace EPPZ.Persistence.Editor.Test
 		// Model.
 		protected Payload alpha, beta, gamma;
 		protected Entity first, second, third, fourth;
-		protected string first_string, second_string, third_string, fourth_string;
+
+		protected string first_string;
+		protected string second_string;
+		protected string third_string;
+		protected string fourth_string;
+
+		protected string first_string_zip;
+		protected string second_string_zip;
+		protected string third_string_zip;
+		protected string fourth_string_zip;
 
 
 		public virtual void Setup()
@@ -164,6 +173,116 @@ namespace EPPZ.Persistence.Editor.Test
 			Assert.AreNotEqual(
 				new Entity(0, "Empty"),
 				new Entity(3, "Third", new Payload(3, "Gamma", 0,1,2,3,4,5,6,7,8,9))
+			);
+		}
+
+	#endregion
+
+
+	#region Zip
+
+		[Test]
+		public void Zip()
+		{
+			Assert.AreEqual(
+				first_string.Zip(),
+				first_string_zip
+			);
+
+			Assert.AreEqual(
+				second_string.Zip(),
+				second_string_zip
+			);
+
+			Assert.AreEqual(
+				third_string.Zip(),
+				third_string_zip
+			);
+
+			Assert.AreEqual(
+				fourth_string.Zip(),
+				fourth_string_zip
+			);
+		}
+
+		[Test]
+		public void Unzip()
+		{
+			Assert.AreEqual(
+				first_string_zip.Unzip(),
+				first_string
+			);
+
+			Assert.AreEqual(
+				second_string_zip.Unzip(),
+				second_string
+			);
+
+			Assert.AreEqual(
+				third_string_zip.Unzip(),
+				third_string
+			);
+
+			Assert.AreEqual(
+				fourth_string_zip.Unzip(),
+				fourth_string
+			);
+		}
+
+	#endregion
+
+
+	#region String (Zip)
+
+		[Test]
+		public void StringToObject_Unzip()
+		{
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(first_string_zip.Unzip()),
+				first
+			);
+
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(second_string_zip.Unzip()),
+				second
+			);
+
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(third_string_zip.Unzip()),
+				third
+			);
+
+			Assert.AreEqual(
+				serializer.StringToObject<Entity>(fourth_string_zip.Unzip()),
+				fourth
+			);
+
+			// Error.
+			Assert.IsNull(
+				serializer.StringToObject<Entity>("<ERROR>".Unzip())
+			);
+		}
+
+		[Test]
+		public void ObjectToString_Zip()
+		{
+			Assert.AreEqual(
+				serializer.ObjectToString(first).Zip(),
+				first_string_zip
+			);
+
+			Assert.AreEqual(
+				serializer.ObjectToString(second).Zip(),
+				second_string_zip
+			);
+			Assert.AreEqual(
+				serializer.ObjectToString(third).Zip(),
+				third_string_zip
+			);
+
+			Assert.AreEqual(
+				serializer.ObjectToString(fourth).Zip(),
+				fourth_string_zip
 			);
 		}
 

@@ -18,27 +18,59 @@ namespace EPPZ.Persistence
 {
 
 
-	public static class Bytes_Extensions
-	{
-
-
-		/// <summary>
-		/// Convert bytes to UTF8 string.
-		/// </summary>
-		public static string String(this byte[] this_)
-		{ return Encoding.UTF8.GetString(this_); }
-
-		/// <summary>
-		/// Convert bytes to Base64 string.
-		/// </summary>
-		public static string Base64String(this byte[] this_)
-		{ return Convert.ToBase64String(this_); }
-	}
-
-
 	public static class String
 	{
 
+
+	#region Serializer
+
+		/// <summary>
+		/// An alias to `Serializer.GetFilePathWithExtension()`.
+		/// </summary>
+		/// <param name="serializer">Serializer to use.</param>
+		public static string WithExtension(this string this_, Serializer serializer = null)
+		{ return Serializer.SerializerOrDefault(serializer).GetFilePathWithExtension(this_); }
+
+		/// <summary>
+		/// An alias to `Serializer.StringToObject()`.
+		/// </summary>
+		public static T ToObject<T>(this string this_, Serializer serializer = null)
+		{ return Serializer.SerializerOrDefault(serializer).StringToObject<T>(this_); }
+
+	#endregion
+
+
+	#region Bytes
+
+		/// <summary>
+		/// Get UTF8 bytes from string.
+		/// </summary>
+		public static byte[] Bytes(this string this_)
+		{ return Encoding.UTF8.GetBytes(this_); }
+
+		/// <summary>
+		/// Get Base64 bytes from string.
+		/// </summary>
+		public static byte[] Base64Bytes(this string this_)
+		{
+			byte[] outputBytes = new byte[0];
+			try
+			{ outputBytes = Convert.FromBase64String(this_); }
+			catch (Exception exception)
+			{ Debug.LogWarning("String.Base64Bytes() exception: "+exception); }
+			return outputBytes;
+		}
+
+	#endregion
+
+
+	#region Zip
+
+		public static string Zip(this string this_)
+		{ return CompressBytes(this_.Bytes()).Base64String(); }
+
+		public static string Unzip(this string this_)
+		{ return DecompressBytes(this_.Base64Bytes()).String(); }
 
 		/// <summary>
 		/// A fallback for `Stream.CopyTo()` (only introduced in .NET 4).
@@ -51,32 +83,10 @@ namespace EPPZ.Persistence
             { outputStream.Write(bytes, 0, bytesRead); }
         }
 
-		/// <summary>
-		/// An alias to `Serializer.GetFilePathWithExtension()`.
-		/// </summary>
-		public static string WithExtension(this string this_, Serializer serializer)
-		{ return serializer.GetFilePathWithExtension(this_); }
-
-		/// <summary>
-		/// Get UTF8 bytes from string.
-		/// </summary>
-		public static byte[] Bytes(this string this_)
-		{ return Encoding.UTF8.GetBytes(this_); }
-
-		/// <summary>
-		/// Get Base64 bytes from string.
-		/// </summary>
-		public static byte[] Base64Bytes(this string this_)
-		{ return Convert.FromBase64String(this_); }
-
-		public static string Zip(this string this_)
-		{ return CompressBytes(this_.Bytes()).Base64String(); }
-
-		public static string Unzip(this string this_)
-		{ return DecompressBytes(this_.Base64Bytes()).String(); }
-
 		static byte[] CompressBytes(byte[] inputBytes)
 		{
+			if (inputBytes.Length == 0) return inputBytes; // Only if any
+
 			using (MemoryStream inputStream = new MemoryStream(inputBytes))
 				using (MemoryStream outputStream = new MemoryStream())
 				{
@@ -86,9 +96,11 @@ namespace EPPZ.Persistence
 				}
 		}
 
-		static byte[] DecompressBytes(byte[] bytes)
+		static byte[] DecompressBytes(byte[] inputBytes)
 		{
-			using (MemoryStream inputStream = new MemoryStream(bytes))
+			if (inputBytes.Length == 0) return inputBytes; // Only if any
+
+			using (MemoryStream inputStream = new MemoryStream(inputBytes))
     			using (MemoryStream outputStream = new MemoryStream())
 				{
 					using (GZipStream zipStream = new GZipStream(inputStream, CompressionMode.Decompress))
@@ -96,5 +108,9 @@ namespace EPPZ.Persistence
 					return outputStream.ToArray();
 				}
 		}
+
+	#endregion
+
+
 	}
 }

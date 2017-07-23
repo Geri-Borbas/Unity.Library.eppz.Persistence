@@ -38,13 +38,16 @@ namespace EPPZ.Persistence.Editor.Test
 			// Instance.
 			serializer = new EPPZ.Persistence.JSONSerializer();
 
-			_RecreateTestFiles();
-
 			// JSON representation strings (escaped double quotes).
 			first_string = "{\"ID\":1,\"name\":\"First\",\"payloads\":[{\"ID\":1,\"name\":\"Alpha\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
 			second_string = "{\"ID\":2,\"name\":\"Second\",\"payloads\":[{\"ID\":2,\"name\":\"Beta\",\"data\":[0,1,2,3,4,5,6,7,8,9]},{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
 			third_string = "{\"ID\":3,\"name\":\"Third\",\"payloads\":[{\"ID\":3,\"name\":\"Gamma\",\"data\":[0,1,2,3,4,5,6,7,8,9]}]}";
 			fourth_string = "{\"ID\":4,\"name\":\"Fourth\",\"payloads\":[]}";
+
+			first_string_zip = "H4sIAAAAAAAAA6tW8nRRsjLUUcpLzE1VslJyyywqLlHSUSpIrMzJT0wpVrKKrkZT4phTkJEIVJKSWJIIlDbQMdQx0jHWMdEx1THTMdex0LGMrdWBaDKCa3JKLSFSjzFcj3tibi4hTbG1AB1cQuHCAAAA";
+			second_string_zip = "H4sIAAAAAAAAA6tW8nRRsjLSUcpLzE1VslIKTk3Oz0tR0lEqSKzMyU9MKVayiq5GU+OUWpIIVJGSCKSsog10DHWMdIx1THRMdcx0zHUsdCxja3UgeozhetwTc3MJaYqtBQA++rdZjgAAAA==";
+			third_string_zip = "H4sIAAAAAAAAA6tW8nRRsjLWUcpLzE1VslIKycgsSlHSUSpIrMzJT0wpVrKKrkZT4p6Ym5sIVJKSWJIIlDbQMdQx0jHWMdEx1THTMdex0LGMrY2tBQBoNFOrWQAAAA==";
+			fourth_string_zip = "H4sIAAAAAAAAA6tW8nRRsjLRUcpLzE1VslJyyy8tKslQ0lEqSKzMyU9MKVayio6tBQB5M3WNJgAAAA==";			
 
 			// Resources.
 			Files.Copy(
@@ -78,12 +81,23 @@ namespace EPPZ.Persistence.Editor.Test
 			serializer.ObjectToFile(first, testFolderPath + "first");
 			serializer.ObjectToFile(second, testFolderPath + "second");
 			serializer.ObjectToFile(third, testFolderPath + "third");
-			serializer.ObjectToFile(fourth, testFolderPath + "fourth");			
+			serializer.ObjectToFile(fourth, testFolderPath + "fourth");		
+
 			jsonSerializer.Pretty().ObjectToFile(first, testFolderPath + "first_pretty");
 			jsonSerializer.Pretty().ObjectToFile(second, testFolderPath + "second_pretty");
 			jsonSerializer.Pretty().ObjectToFile(third, testFolderPath + "third_pretty");
 			jsonSerializer.Pretty().ObjectToFile(fourth, testFolderPath + "fourth_pretty");
 			jsonSerializer.Default();
+
+			System.IO.File.WriteAllText(testFolderPath + "first_string.txt", serializer.ObjectToString(first));
+			System.IO.File.WriteAllText(testFolderPath + "second_string.txt", serializer.ObjectToString(second));
+			System.IO.File.WriteAllText(testFolderPath + "third_string.txt", serializer.ObjectToString(third));
+			System.IO.File.WriteAllText(testFolderPath + "fourth_string.txt", serializer.ObjectToString(fourth));
+
+			System.IO.File.WriteAllText(testFolderPath + "first_string_zip.txt", serializer.ObjectToString(first).Zip());
+			System.IO.File.WriteAllText(testFolderPath + "second_string_zip.txt", serializer.ObjectToString(second).Zip());
+			System.IO.File.WriteAllText(testFolderPath + "third_string_zip.txt", serializer.ObjectToString(third).Zip());
+			System.IO.File.WriteAllText(testFolderPath + "fourth_string_zip.txt", serializer.ObjectToString(fourth).Zip());
 		}
 
 		[OneTimeTearDown]
