@@ -321,6 +321,37 @@ namespace EPPZ.Persistence.Editor.Test
 		}
 
 		[Test]
+		public void ToObject()
+		{
+			serializer.SetDefaultSerializer();
+
+			Assert.AreEqual(
+				first_string.ToObject<Entity>(),
+				first
+			);
+
+			Assert.AreEqual(
+				second_string.ToObject<Entity>(),
+				second
+			);
+
+			Assert.AreEqual(
+				third_string.ToObject<Entity>(),
+				third
+			);
+
+			Assert.AreEqual(
+				fourth_string.ToObject<Entity>(),
+				fourth
+			);
+
+			// Error.
+			Assert.IsNull(
+				"<ERROR>".ToObject<Entity>()
+			);	
+		}
+
+		[Test]
 		public void ObjectToString()
 		{
 			Assert.AreEqual(
@@ -339,6 +370,31 @@ namespace EPPZ.Persistence.Editor.Test
 
 			Assert.AreEqual(
 				serializer.ObjectToString(fourth),
+				fourth_string
+			);
+		}
+
+		[Test]
+		public void ToString()
+		{
+			serializer.SetDefaultSerializer();
+
+			Assert.AreEqual(
+				first.ToString(),
+				first_string
+			);
+
+			Assert.AreEqual(
+				second.ToString(),
+				second_string
+			);
+			Assert.AreEqual(
+				third.ToString(),
+				third_string
+			);
+
+			Assert.AreEqual(
+				fourth.ToString(),
 				fourth_string
 			);
 		}
@@ -404,6 +460,36 @@ namespace EPPZ.Persistence.Editor.Test
 				tempFolderPath + "fourth_test".WithExtension(serializer)
 			);
 		}
+
+		[Test]
+		public void ToFileAt()
+		{			
+			fourth.ToFileAt(tempFolderPath + "first_test");
+			FileAssert.AreEqual(
+				testFolderPath + "first".WithExtension(serializer),			
+				tempFolderPath + "first_test".WithExtension(serializer)
+			);
+
+			fourth.ToFileAt(tempFolderPath + "second_test");
+			FileAssert.AreEqual(
+				testFolderPath + "second".WithExtension(serializer),			
+				tempFolderPath + "second_test".WithExtension(serializer)
+			);
+
+			fourth.ToFileAt(tempFolderPath + "third_test");
+			FileAssert.AreEqual(
+				testFolderPath + "third".WithExtension(serializer),			
+				tempFolderPath + "third_test".WithExtension(serializer)
+			);
+
+			fourth.ToFileAt(tempFolderPath + "fourth_test");
+			FileAssert.AreEqual(
+				testFolderPath + "fourth".WithExtension(serializer),			
+				tempFolderPath + "fourth_test".WithExtension(serializer)
+			);
+		}
+
+		
 
 		[Test]
 		public void FileToObject_Extensions()

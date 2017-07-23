@@ -1,5 +1,12 @@
 # eppz.Persistence
 
+* 0.5.3
+
+	+ Tests for `String` and `Object` extensions
+		+ `ToString()`
+		+ `ToFileAt()`
+		+ `ToObject()`
+
 * 0.5.2
 
 	+ More common `Serializer` tests
