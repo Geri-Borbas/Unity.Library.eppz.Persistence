@@ -1,5 +1,9 @@
 # eppz.Persistence
 
+* 0.6.2
+		
+	+ Delete some leftover test files on `TearDown`
+
 * 0.6.1
 
 	+ Some more tests to file extension management

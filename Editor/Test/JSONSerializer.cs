@@ -120,6 +120,8 @@ namespace EPPZ.Persistence.Editor.Test
 
 			Files.DeleteAsset("Assets/Resources/JSON/first_test.json");
 			Files.DeleteAsset("Assets/Resources/JSON/second_test.json");
+			Files.DeleteAsset("Assets/Resources/JSON/third_test.json");
+			Files.DeleteAsset("Assets/Resources/JSON/fourth_test.json");
 			Files.DeleteAsset("Assets/Resources/JSON/third_test.txt");
 			Files.DeleteAsset("Assets/Resources/JSON/fourth_test.txt");
 

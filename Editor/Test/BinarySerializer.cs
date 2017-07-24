@@ -116,6 +116,8 @@ namespace EPPZ.Persistence.Editor.Test
 
 			Files.DeleteAsset("Assets/Resources/Binary/first_test.bytes");
 			Files.DeleteAsset("Assets/Resources/Binary/second_test.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/third_test.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/fourth_test.bytes");
 			Files.DeleteAsset("Assets/Resources/Binary/third_test.txt");
 			Files.DeleteAsset("Assets/Resources/Binary/fourth_test.txt");
 
@@ -184,12 +186,12 @@ namespace EPPZ.Persistence.Editor.Test
 			serializer.TurnOffFileExtensionManagement();
 
 			// No extension added silently.
-			serializer.ObjectToFile(first, tempFolderPath+"first_test_extension");
+			serializer.ObjectToFile(first, tempFolderPath + "first_test_extension");
 			FileAssert.DoesNotExist(tempFolderPath + "first_test_extension.bytes");
 			FileAssert.Exists(tempFolderPath + "first_test_extension");
 
 			// Any extension can be used.
-			serializer.ObjectToFile(first, tempFolderPath+"first_test_extension.archive");
+			serializer.ObjectToFile(first, tempFolderPath + "first_test_extension.archive");
 			FileAssert.DoesNotExist(tempFolderPath + "first_test_extension.bytes");
 			FileAssert.Exists(tempFolderPath + "first_test_extension.archive");
 
