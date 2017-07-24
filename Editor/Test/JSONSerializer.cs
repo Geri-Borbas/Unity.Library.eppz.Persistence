@@ -175,6 +175,52 @@ namespace EPPZ.Persistence.Editor.Test
 	#region File
 
 		[Test]
+		public void FileToObject_Without_ManageFileExtensions()
+		{
+			// Opt-out file extension management.
+			serializer.TurnOffFileExtensionManagement();
+
+			Assert.IsNull(
+				serializer.FileToObject<Entity>(testFolderPath + "first")
+			);
+
+			Assert.IsNull(
+				serializer.FileToObject<Entity>(testFolderPath + "second")
+			);
+
+			Assert.IsNull(
+				serializer.FileToObject<Entity>(testFolderPath + "third")
+			);
+
+			Assert.IsNull(
+				serializer.FileToObject<Entity>(testFolderPath + "fourth")
+			);
+
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath + "first.json"),
+				first
+			);
+
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath + "second.json"),
+				second
+			);
+
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath + "third.txt"),
+				third
+			);
+
+			Assert.AreEqual(
+				serializer.FileToObject<Entity>(testFolderPath + "fourth.txt"),
+				fourth
+			);
+
+			// Opt-in file extension management (for the rest of the tests).
+			serializer.TurnOnFileExtensionManagement();
+		}	
+
+		[Test]
 		public void ApplyFileTo()
 		{
 			Entity empty = new Entity();
@@ -259,7 +305,7 @@ namespace EPPZ.Persistence.Editor.Test
 
 			// Opt-in file extension management (for the rest of the tests).
 			serializer.TurnOnFileExtensionManagement();
-		}	
+		}
 
 	#endregion
 	

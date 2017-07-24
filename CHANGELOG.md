@@ -1,5 +1,9 @@
 # eppz.Persistence
 
+* 0.6.1
+
+	+ Some more tests to file extension management
+
 * 0.6.0
 
 	+ Added managing multiple extensions

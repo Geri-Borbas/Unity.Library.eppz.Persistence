@@ -270,6 +270,7 @@ namespace EPPZ.Persistence.Editor.Test
 				serializer.ObjectToString(second).Zip(),
 				second_string_zip
 			);
+			
 			Assert.AreEqual(
 				serializer.ObjectToString(third).Zip(),
 				third_string_zip
