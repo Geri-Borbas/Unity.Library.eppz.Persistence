@@ -36,6 +36,14 @@ namespace EPPZ.Persistence.Editor.Test
 		{
 			base.Setup();
 
+			// Folders.
+			resourcePath = "JSON/";
+			resourcesFolderPath = Application.dataPath + "/Resources/JSON/";
+			testFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/JSON/";
+			tempFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/JSON/.temp/";
+			Files.CreateFolderIfNotExist(resourcesFolderPath);			
+			Files.CreateFolderIfNotExist(tempFolderPath);
+
 			// Instance.
 			serializer = new EPPZ.Persistence.JSONSerializer();
 
@@ -62,19 +70,19 @@ namespace EPPZ.Persistence.Editor.Test
 			);
 
 			Files.Copy(
-				testFolderPath + "third.json",
-				resourcesFolderPath + "third.json"
+				testFolderPath + "third.txt",
+				resourcesFolderPath + "third.txt"
 			);
 
 			Files.Copy(
-				testFolderPath + "fourth.json",
-				resourcesFolderPath + "fourth.json"
+				testFolderPath + "fourth.txt",
+				resourcesFolderPath + "fourth.txt"
 			);
 
-			AssetDatabase.ImportAsset("Assets/Resources/first.json");
-			AssetDatabase.ImportAsset("Assets/Resources/second.json");
-			AssetDatabase.ImportAsset("Assets/Resources/third.json");
-			AssetDatabase.ImportAsset("Assets/Resources/fourth.json");
+			AssetDatabase.ImportAsset("Assets/Resources/JSON/first.json");
+			AssetDatabase.ImportAsset("Assets/Resources/JSON/second.json");
+			AssetDatabase.ImportAsset("Assets/Resources/JSON/third.txt");
+			AssetDatabase.ImportAsset("Assets/Resources/JSON/fourth.txt");
 		}
 
 		void _RecreateTestFiles()
@@ -103,24 +111,25 @@ namespace EPPZ.Persistence.Editor.Test
 
 		[OneTimeTearDown]
 		public void TearDown()
-		{ 
+		{ 			
 			// Resources.
-			Files.DeleteAsset("Assets/Resources/first.json");
-			Files.DeleteAsset("Assets/Resources/second.json");
-			Files.DeleteAsset("Assets/Resources/third.json");
-			Files.DeleteAsset("Assets/Resources/fourth.json");
+			Files.DeleteAsset("Assets/Resources/JSON/first.json");
+			Files.DeleteAsset("Assets/Resources/JSON/second.json");
+			Files.DeleteAsset("Assets/Resources/JSON/third.txt");
+			Files.DeleteAsset("Assets/Resources/JSON/fourth.txt");
 
-			Files.DeleteAsset("Assets/Resources/first_test.json");
-			Files.DeleteAsset("Assets/Resources/second_test.json");
-			Files.DeleteAsset("Assets/Resources/third_test.json");
-			Files.DeleteAsset("Assets/Resources/fourth_test.json");
+			Files.DeleteAsset("Assets/Resources/JSON/first_test.json");
+			Files.DeleteAsset("Assets/Resources/JSON/second_test.json");
+			Files.DeleteAsset("Assets/Resources/JSON/third_test.txt");
+			Files.DeleteAsset("Assets/Resources/JSON/fourth_test.txt");
 
-			Files.DeleteAsset("Assets/Resources/first_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/second_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/third_test_pretty.json");
-			Files.DeleteAsset("Assets/Resources/fourth_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/JSON/first_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/JSON/second_test_pretty.json");
+			Files.DeleteAsset("Assets/Resources/JSON/third_test_pretty.txt");
+			Files.DeleteAsset("Assets/Resources/JSON/fourth_test_pretty.txt");
 
 			Files.DeleteFolderIfEmpty(resourcesFolderPath);
+			Files.DeleteFolderAnyway(tempFolderPath);
 		}
 
 
@@ -219,18 +228,38 @@ namespace EPPZ.Persistence.Editor.Test
 
 			jsonSerializer.Pretty().ObjectToFile(third, tempFolderPath + "third_test_pretty");
 			Files.AreEqual(
-				testFolderPath + "third_pretty.json",
+				testFolderPath + "third_pretty.txt",
 				tempFolderPath + "third_test_pretty.json"
 			);
 
 			jsonSerializer.Pretty().ObjectToFile(fourth, tempFolderPath + "fourth_test_pretty");
 			Files.AreEqual(
-				testFolderPath + "fourth_pretty.json",
+				testFolderPath + "fourth_pretty.txt",
 				tempFolderPath + "fourth_test_pretty.json"
 			);
 
 			jsonSerializer.Default();
 		}
+
+		[Test]
+		public void ObjectToFile_Without_ManageFileExtensions()
+		{
+			// Opt-out file extension management.
+			serializer.TurnOffFileExtensionManagement();
+
+			// No extension added silently.
+			serializer.ObjectToFile(first, tempFolderPath+"first_test_extension");
+			FileAssert.DoesNotExist(tempFolderPath + "first_test_extension.json");
+			FileAssert.Exists(tempFolderPath + "first_test_extension");
+
+			// Any extension can be used.
+			serializer.ObjectToFile(first, tempFolderPath+"first_test_extension.txt");
+			FileAssert.DoesNotExist(tempFolderPath + "first_test_extension.json");
+			FileAssert.Exists(tempFolderPath + "first_test_extension.txt");
+
+			// Opt-in file extension management (for the rest of the tests).
+			serializer.TurnOnFileExtensionManagement();
+		}	
 
 	#endregion
 	
@@ -242,25 +271,25 @@ namespace EPPZ.Persistence.Editor.Test
 		{
 			Entity empty = new Entity();
 
-			jsonSerializer.ApplyResourceTo("first", empty);
+			jsonSerializer.ApplyResourceTo(resourcePath + "first", empty);
 			Assert.AreEqual(
 				empty,
 				first
 			);
 
-			jsonSerializer.ApplyResourceTo("second", empty);
+			jsonSerializer.ApplyResourceTo(resourcePath + "second", empty);
 			Assert.AreEqual(
 				empty,
 				second
 			);
 
-			jsonSerializer.ApplyResourceTo("third", empty);
+			jsonSerializer.ApplyResourceTo(resourcePath + "third", empty);
 			Assert.AreEqual(
 				empty,
 				third
 			);
 
-			jsonSerializer.ApplyResourceTo("fourth", empty);
+			jsonSerializer.ApplyResourceTo(resourcePath + "fourth", empty);
 			Assert.AreEqual(
 				empty,
 				fourth

@@ -36,9 +36,10 @@ namespace EPPZ.Persistence.Editor.Test
 		protected EPPZ.Persistence.Serializer serializer;
 
 		// Folders.
+		protected string resourcePath;
+		protected string resourcesFolderPath;
 		protected string testFolderPath;
 		protected string tempFolderPath;
-		protected string resourcesFolderPath;
 
 		// Model.
 		protected Payload alpha, beta, gamma;
@@ -56,14 +57,7 @@ namespace EPPZ.Persistence.Editor.Test
 
 
 		public virtual void Setup()
-		{
-			// Folders.
-			testFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/";
-			tempFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/.temp/";
-			resourcesFolderPath = Application.dataPath + "/Resources/";
-			Files.CreateFolderIfNotExist(tempFolderPath);
-			Files.CreateFolderIfNotExist(resourcesFolderPath);
-
+		{		
 			// Models.
 			alpha = new Payload(
 				1,
@@ -436,29 +430,31 @@ namespace EPPZ.Persistence.Editor.Test
 
 		[Test]
 		public void ObjectToFile()
-		{			
+		{		
+			// Using primary file extension.
 			serializer.ObjectToFile(first, tempFolderPath + "first_test");
 			FileAssert.AreEqual(
-				testFolderPath + "first".WithExtension(serializer),			
-				tempFolderPath + "first_test".WithExtension(serializer)
+				testFolderPath + "first".WithFileExtension(serializer),			
+				tempFolderPath + "first_test".WithFileExtension(serializer)
 			);
 
 			serializer.ObjectToFile(second, tempFolderPath + "second_test");
 			FileAssert.AreEqual(
-				testFolderPath + "second".WithExtension(serializer),			
-				tempFolderPath + "second_test".WithExtension(serializer)
+				testFolderPath + "second".WithFileExtension(serializer),
+				tempFolderPath + "second_test".WithFileExtension(serializer)
 			);
 
+			// Using seconday file extension (in `testFolderPath` folder).
 			serializer.ObjectToFile(third, tempFolderPath + "third_test");
 			FileAssert.AreEqual(
-				testFolderPath + "third".WithExtension(serializer),			
-				tempFolderPath + "third_test".WithExtension(serializer)
+				(testFolderPath + "third.data").WithExistingFileExtension(serializer),
+				tempFolderPath + "third_test".WithFileExtension(serializer)
 			);
 
 			serializer.ObjectToFile(fourth, tempFolderPath + "fourth_test");
 			FileAssert.AreEqual(
-				testFolderPath + "fourth".WithExtension(serializer),			
-				tempFolderPath + "fourth_test".WithExtension(serializer)
+				(testFolderPath + "fourth.data").WithExistingFileExtension(serializer),
+				tempFolderPath + "fourth_test".WithFileExtension(serializer)
 			);
 		}
 
@@ -467,35 +463,33 @@ namespace EPPZ.Persistence.Editor.Test
 		{			
 			first.SerializeToFileAt(tempFolderPath + "first_test");
 			FileAssert.AreEqual(
-				testFolderPath + "first".WithExtension(serializer),			
-				tempFolderPath + "first_test".WithExtension(serializer)
+				testFolderPath + "first".WithFileExtension(serializer),			
+				tempFolderPath + "first_test".WithFileExtension(serializer)
 			);
 
 			second.SerializeToFileAt(tempFolderPath + "second_test");
 			FileAssert.AreEqual(
-				testFolderPath + "second".WithExtension(serializer),			
-				tempFolderPath + "second_test".WithExtension(serializer)
+				testFolderPath + "second".WithFileExtension(serializer),			
+				tempFolderPath + "second_test".WithFileExtension(serializer)
 			);
 
 			third.SerializeToFileAt(tempFolderPath + "third_test");
 			FileAssert.AreEqual(
-				testFolderPath + "third".WithExtension(serializer),			
-				tempFolderPath + "third_test".WithExtension(serializer)
+				(testFolderPath + "third").WithExistingFileExtension(serializer),			
+				tempFolderPath + "third_test".WithFileExtension(serializer)
 			);
 
 			fourth.SerializeToFileAt(tempFolderPath + "fourth_test");
 			FileAssert.AreEqual(
-				testFolderPath + "fourth".WithExtension(serializer),			
-				tempFolderPath + "fourth_test".WithExtension(serializer)
+				(testFolderPath + "fourth").WithExistingFileExtension(serializer),			
+				tempFolderPath + "fourth_test".WithFileExtension(serializer)
 			);
 		}
-
-		
 
 		[Test]
 		public void FileToObject_Extensions()
 		{
-			// Extension gets added silently (See `Serializer.GetFilePathWithExtension()`).
+			// Extension gets added silently (See `Serializer.GetFilePathWithFileExtension()`).
 			Assert.AreEqual(
 				serializer.FileToObject<Entity>(testFolderPath + "first"),
 				first
@@ -519,34 +513,35 @@ namespace EPPZ.Persistence.Editor.Test
 		}
 
 		[Test]
-		public void ObjectToFile_Extensions()
+		public void ObjectToFile_ManageFileExtensions()
 		{
-			// Extension gets added silently (See `Serializer.GetFilePathWithExtension()`).
+			// Extension gets added silently (See `Serializer.GetExistingFilePathWithFileExtensions()`).
 			serializer.ObjectToFile(first, tempFolderPath+"first_test");
 			FileAssert.AreEqual(
-				testFolderPath + "first_test."+serializer.Extension,
-				tempFolderPath + "first_test."+serializer.Extension
+				testFolderPath + "first_test."+serializer.PrimaryFileExtension,
+				tempFolderPath + "first_test."+serializer.PrimaryFileExtension
 			);
 
-			// Any other extension gets replaced silently (see examples of extension appending).
-			serializer.ObjectToFile(second, tempFolderPath+"second_test.json");
+			// `WithFileExtension` creates a new path using primary extension (even if the file in non-existent).
+			serializer.ObjectToFile(second, tempFolderPath+"second_test.json"); // `json` get replaced
 			FileAssert.AreEqual(
-				testFolderPath + "second_test".WithExtension(serializer),
-				tempFolderPath + "second_test".WithExtension(serializer)
+				testFolderPath + "second_test".WithFileExtension(serializer),
+				tempFolderPath + "second_test".WithFileExtension(serializer)
 			);
 
-			serializer.ObjectToFile(third, tempFolderPath+"third_test.zip");
+			// `WithExistingFileExtension` only returns a path is there is an existing file there (it iterates over every defined file extension).
+			serializer.ObjectToFile(third, tempFolderPath+"third_test.zip"); // `zip` get replaced
 			FileAssert.AreEqual(
-				Path.ChangeExtension(testFolderPath + "third_test", serializer.Extension),
-				Path.ChangeExtension(tempFolderPath + "third_test", serializer.Extension)
+				(testFolderPath + "third_test").WithExistingFileExtension(serializer),
+				tempFolderPath + "third_test".WithFileExtension(serializer)
 			);
 
-			serializer.ObjectToFile(fourth, tempFolderPath + "fourth_test.bytes");
+			serializer.ObjectToFile(fourth, tempFolderPath + "fourth_test.bytes"); // `bytes` get replaced
 			FileAssert.AreEqual(
-				serializer.GetFilePathWithExtension(testFolderPath + "fourth_test"),
-				serializer.GetFilePathWithExtension(tempFolderPath + "fourth_test")
+				(testFolderPath + "fourth_test").WithExistingFileExtension(serializer),
+				tempFolderPath + "fourth_test".WithFileExtension(serializer)
 			);
-		}	
+		}
 
 	#endregion
 
@@ -558,22 +553,22 @@ namespace EPPZ.Persistence.Editor.Test
 		{
 			Assert.AreEqual(
 				first,
-				serializer.ResourceToObject<Entity>("first")
+				serializer.ResourceToObject<Entity>(resourcePath + "first")
 			);
 			
 			Assert.AreEqual(
 				second,
-				serializer.ResourceToObject<Entity>("second")
+				serializer.ResourceToObject<Entity>(resourcePath + "second")
 			);
 			
 			Assert.AreEqual(
 				third,
-				serializer.ResourceToObject<Entity>("third")
+				serializer.ResourceToObject<Entity>(resourcePath + "third")
 			);
 			
 			Assert.AreEqual(
 				fourth,
-				serializer.ResourceToObject<Entity>("fourth")
+				serializer.ResourceToObject<Entity>(resourcePath + "fourth")
 			);
 		}
 
@@ -582,31 +577,32 @@ namespace EPPZ.Persistence.Editor.Test
 		{			
 			// Write to `Assets/Resources`, import, then read back as resource (using `UnityEngine.Resources`).
 			serializer.ObjectToFile(first, resourcesFolderPath + "first_test");
-			AssetDatabase.ImportAsset("Assets/Resources/first_test".WithExtension(serializer));
+			AssetDatabase.ImportAsset("Assets/Resources/" + resourcePath + "first_test".WithFileExtension(serializer));
 			Assert.AreEqual(
-				File.ReadAllBytes(testFolderPath + "first_test".WithExtension(serializer)),
-				(Resources.Load("first_test") as TextAsset).bytes
+				File.ReadAllBytes(testFolderPath + "first_test".WithFileExtension(serializer)),
+				(Resources.Load(resourcePath + "first_test") as TextAsset).bytes
 			);
 
 			serializer.ObjectToFile(second, resourcesFolderPath + "second_test");
-			AssetDatabase.ImportAsset("Assets/Resources/second_test".WithExtension(serializer));
+			AssetDatabase.ImportAsset("Assets/Resources/" + resourcePath + "second_test".WithFileExtension(serializer));
 			Assert.AreEqual(
-				File.ReadAllBytes(testFolderPath + "second_test".WithExtension(serializer)),
-				(Resources.Load("second_test") as TextAsset).bytes
+				File.ReadAllBytes(testFolderPath + "second_test".WithFileExtension(serializer)),
+				(Resources.Load(resourcePath + "second_test") as TextAsset).bytes
 			);
 
+			// Using `WithExistingFileExtension` to take care of secondary extensions.
 			serializer.ObjectToFile(third, resourcesFolderPath + "third_test");
-			AssetDatabase.ImportAsset("Assets/Resources/third_test".WithExtension(serializer));
+			AssetDatabase.ImportAsset("Assets/Resources/" + resourcePath + "third_test".WithFileExtension(serializer));
 			Assert.AreEqual(
-				File.ReadAllBytes(testFolderPath + "third_test".WithExtension(serializer)),
-				(Resources.Load("third_test") as TextAsset).bytes
+				File.ReadAllBytes((testFolderPath + "third_test").WithExistingFileExtension(serializer)),
+				(Resources.Load(resourcePath + "third_test") as TextAsset).bytes
 			);
 
 			serializer.ObjectToFile(fourth, resourcesFolderPath + "fourth_test");
-			AssetDatabase.ImportAsset("Assets/Resources/fourth_test".WithExtension(serializer));
+			AssetDatabase.ImportAsset("Assets/Resources/" + resourcePath + "fourth_test".WithFileExtension(serializer));
 			Assert.AreEqual(
-				File.ReadAllBytes(testFolderPath + "fourth_test".WithExtension(serializer)),
-				(Resources.Load("fourth_test") as TextAsset).bytes
+				File.ReadAllBytes((testFolderPath + "fourth_test").WithExistingFileExtension(serializer)),
+				(Resources.Load(resourcePath + "fourth_test") as TextAsset).bytes
 			);
 		}
 
@@ -631,7 +627,7 @@ namespace EPPZ.Persistence.Editor.Test
 			Assert.AreEqual(
 				serializer.FileOrResourceToObject<Entity>(
 					"<ERROR>",
-					"first"
+					resourcePath + "first"
 				),
 				first
 			);

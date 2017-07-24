@@ -24,11 +24,20 @@ namespace EPPZ.Persistence.Extensions
 	#region Serializer
 
 		/// <summary>
-		/// An alias to `Serializer.GetFilePathWithExtension()`.
+		/// An alias to `Serializer.CreateFilePathWithFirstFileExtension()`.
+		/// Returns a file path anyway (even if the resulting file does not exist).
 		/// </summary>
 		/// <param name="serializer">Serializer to use.</param>
-		public static string WithExtension(this string this_, Serializer serializer = null)
-		{ return Serializer.SerializerOrDefault(serializer).GetFilePathWithExtension(this_); }
+		public static string WithFileExtension(this string this_, Serializer serializer = null)
+		{ return Serializer.SerializerOrDefault(serializer).CreateFilePathWithPrimaryFileExtension(this_); }
+
+		/// <summary>
+		/// An alias to `Serializer.GetExistingFilePathWithFileExtensions()`.
+		/// Returns a file path only if the resulting file exists.
+		/// </summary>
+		/// <param name="serializer">Serializer to use.</param>
+		public static string WithExistingFileExtension(this string this_, Serializer serializer = null)
+		{ return Serializer.SerializerOrDefault(serializer).GetExistingFilePathWithFileExtensions(this_); }
 
 		/// <summary>
 		/// An alias to `Serializer.StringToObject()`.

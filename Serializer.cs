@@ -25,6 +25,23 @@ namespace EPPZ.Persistence
 
 		public bool log;
 
+		/// <summary>
+		/// Managing file extensions (see `#Manage file extensions` region) can be opted-out here.
+		/// </summary>		
+		public bool manageFileExtensions = true;
+
+		public Serializer TurnOffFileExtensionManagement()
+		{
+			manageFileExtensions = false;
+			return this;
+		}
+		
+		public Serializer TurnOnFileExtensionManagement()
+		{
+			manageFileExtensions = true;
+			return this;
+		}
+
 
 	#region Singleton
 
@@ -50,15 +67,68 @@ namespace EPPZ.Persistence
 	#endregion
 
 
+	#region Manage file extensions
+
+		public string PrimaryFileExtension
+		{ get { return FileExtensions[0]; } }
+
+		public string SecondaryFileExtension
+		{ get { return FileExtensions[1]; } }
+
+		public string GetExistingFilePathWithFileExtensions(string filePath)
+		{
+			// Only if file extension management turned on.
+			if (manageFileExtensions == false) return filePath;
+
+			for (int index = 0; index < FileExtensions.Length; index++)
+			{
+				string eachExtension = FileExtensions[index];
+				string eachFilePath = Path.ChangeExtension(filePath, eachExtension);
+				if (File.Exists(eachFilePath))
+				{ return eachFilePath; }
+			}
+
+			Debug.LogWarning("No existing file with any extension at `"+filePath+"`. Returning path using primary `"+PrimaryFileExtension+"` extension.");
+			return Path.ChangeExtension(filePath, PrimaryFileExtension);
+		}
+
+		public string CreateFilePathWithPrimaryFileExtension(string filePath)
+		{
+			// Only if file extension management turned on.
+			if (manageFileExtensions == false) return filePath;
+
+			return Path.ChangeExtension(filePath, PrimaryFileExtension);
+		}
+
+		public string CreateFilePathWithSecondaryFileExtension(string filePath)
+		{
+			// Only if file extension management turned on.
+			if (manageFileExtensions == false) return filePath;
+
+			return Path.ChangeExtension(filePath, SecondaryFileExtension);
+		}
+
+        public bool IsFileExistWithFileExtensions(string filePath)
+		{
+			// Only if file extension management turned on.
+			if (manageFileExtensions == false) return File.Exists(filePath);
+
+			for (int index = 0; index < FileExtensions.Length; index++)
+			{
+				string eachExtension = FileExtensions[index];
+				if (File.Exists(Path.ChangeExtension(filePath, eachExtension)))
+				{ return true; }
+			}
+
+			Debug.LogWarning("No existing file with any extension at `"+filePath+"`.");
+			return false;
+		}
+
+	#endregion
+
+
 	#region Aliases
-
-		public string GetFilePathWithExtension(string filePath)
-		{ return Path.ChangeExtension(filePath, Extension); }
-
-        public bool IsFileExist(string filePath)
-		{ return File.Exists(GetFilePathWithExtension(filePath)); }
-
-
+		
 		public string ObjectToString(object _object)
 		{ return SerializeObjectToString(_object); }
 
@@ -97,8 +167,8 @@ namespace EPPZ.Persistence
 
 	#region Templates
 
-		public virtual string Extension
-		{ get { return null; } }
+		public virtual string[] FileExtensions
+		{ get { return new string[0]; } }
 
 
 		public virtual string SerializeObjectToString(object _object)

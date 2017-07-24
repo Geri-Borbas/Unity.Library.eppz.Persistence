@@ -44,6 +44,8 @@ Entity object = serializer.FileOrResourceToObject<Entity>(
 );
 ```
 
+The library manages the file extensions on its own, using predefined values. See [**Managing file extensions**](#managing-file-extensions) section for more.
+
 > 💡 See editor test fixture at [`Editor/Test/Serializer.cs`](Editor/Test/Serializer.cs) for details.
 
 ## [`Serializer.cs`](Serializer.cs)
@@ -130,6 +132,30 @@ H4sIAAAAAAAAA62UT2/UMBDFv0pvvoRoxmN7PDlzQQIOLDdUIbMbdqN6kyXJImjV784EVLF/SrUp9Smx
 
 * A single extension to mimic a .NET 4 behaviour in .NET 2 (to be used in Gzip extensions above).
     + `_CopyTo()`
+
+## Managing file extensions
+
+This library manages the file extensions on its own by default (can be opted-out). It is inspired by **how `Resources.Load()` works in Unity**, while it also **makes polymorphism possible**: as you can see, a *single editor test fixture*[`Editor/Test/Serializer.cs`](Editor/Test/Serializer.cs) is used to test *both (!) Binary and JSON serializer*.
+
+Serializers have **predefined extensions** to look up at runtime.
+
+```
+// From `JSONSerializer.cs`.
+public override string[] FileExtensions
+{ get { return new string[]{ "json", "txt" }; } }
+
+// From `BinarySerializer.cs`.
+public override string[] FileExtensions
+{ get { return new string[]{ "bytes", "txt", "data" }; } }
+```
+
+> As you can see above, the primary and the secondary extensions are valid file extension values that Unity recognizes (so imports and loads) as resources. Having them predefined enforces compatibility with `Resources.Load()` calls. If you take a look at [`TextAsset.bytes` documentation](https://docs.unity3d.com/ScriptReference/TextAsset-bytes.html) you can see how Unity forces `bytes` extension for binaries (it works with `txt` whatsoever).
+
+When **deserializing** a file, the library iterates over the defined extensions, *until it finds an existing file*, so it can load it (see `Serializer.GetExistingFilePathWithFileExtensions()` for details).
+
+When **serializing** a file, *the primary file extension* will be used.
+
+Any file extension you define in your file path strings will be replaced according the rules above. You can **opt-out** automatic file extension management using `Serializer.TurnOffFileExtensionManagement()`. However, I advice to create a serializer subclass instead (that overrides the `FileExtensions` according your needs). This way you can **avoid hardcoded file extension dependencies** in you application code.
 
 ## License
 

@@ -36,6 +36,14 @@ namespace EPPZ.Persistence.Editor.Test
 		{
 			base.Setup();
 
+			// Folders.
+			resourcePath = "Binary/";
+			resourcesFolderPath = Application.dataPath + "/Resources/Binary/";
+			testFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/Binary/";
+			tempFolderPath = Application.dataPath + "/Plugins/eppz!/Persistence/Editor/Test/Entities/Binary/.temp/";
+			Files.CreateFolderIfNotExist(resourcesFolderPath);	
+			Files.CreateFolderIfNotExist(tempFolderPath);
+
 			// Instance.
 			serializer = new EPPZ.Persistence.BinarySerializer();
 
@@ -62,27 +70,29 @@ namespace EPPZ.Persistence.Editor.Test
 			);
 
 			Files.Copy(
-				testFolderPath + "third.bytes",
-				resourcesFolderPath + "third.bytes"
+				testFolderPath + "third.txt",
+				resourcesFolderPath + "third.txt"
 			);
 
 			Files.Copy(
-				testFolderPath + "fourth.bytes",
-				resourcesFolderPath + "fourth.bytes"
+				testFolderPath + "fourth.txt",
+				resourcesFolderPath + "fourth.txt"
 			);
 
-			AssetDatabase.ImportAsset("Assets/Resources/first.bytes");
-			AssetDatabase.ImportAsset("Assets/Resources/second.bytes");
-			AssetDatabase.ImportAsset("Assets/Resources/third.bytes");
-			AssetDatabase.ImportAsset("Assets/Resources/fourth.bytes");
+			AssetDatabase.ImportAsset("Assets/Resources/Binary/first.bytes");
+			AssetDatabase.ImportAsset("Assets/Resources/Binary/second.bytes");
+			AssetDatabase.ImportAsset("Assets/Resources/Binary/third.txt");
+			AssetDatabase.ImportAsset("Assets/Resources/Binary/fourth.txt");
 		}
 
 		void _RecreateTestFiles()
 		{
-			serializer.ObjectToFile(first, testFolderPath + "first");
-			serializer.ObjectToFile(second, testFolderPath + "second");
-			serializer.ObjectToFile(third, testFolderPath + "third");
-			serializer.ObjectToFile(fourth, testFolderPath + "fourth");
+			serializer.manageFileExtensions = false;
+			serializer.ObjectToFile(first, testFolderPath + "first.bytes");
+			serializer.ObjectToFile(second, testFolderPath + "second.bytes");
+			serializer.ObjectToFile(third, testFolderPath + "third.txt");
+			serializer.ObjectToFile(fourth, testFolderPath + "fourth.txt");
+			serializer.manageFileExtensions = true;
 
 			System.IO.File.WriteAllText(testFolderPath + "first_string.txt", serializer.ObjectToString(first));
 			System.IO.File.WriteAllText(testFolderPath + "second_string.txt", serializer.ObjectToString(second));
@@ -99,17 +109,18 @@ namespace EPPZ.Persistence.Editor.Test
 		public void TearDown()
 		{ 
 			// Resources.
-			Files.DeleteAsset("Assets/Resources/first.bytes");
-			Files.DeleteAsset("Assets/Resources/second.bytes");
-			Files.DeleteAsset("Assets/Resources/third.bytes");
-			Files.DeleteAsset("Assets/Resources/fourth.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/first.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/second.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/third.txt");
+			Files.DeleteAsset("Assets/Resources/Binary/fourth.txt");
 
-			Files.DeleteAsset("Assets/Resources/first_test.bytes");
-			Files.DeleteAsset("Assets/Resources/second_test.bytes");
-			Files.DeleteAsset("Assets/Resources/third_test.bytes");
-			Files.DeleteAsset("Assets/Resources/fourth_test.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/first_test.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/second_test.bytes");
+			Files.DeleteAsset("Assets/Resources/Binary/third_test.txt");
+			Files.DeleteAsset("Assets/Resources/Binary/fourth_test.txt");
 
 			Files.DeleteFolderIfEmpty(resourcesFolderPath);
+			Files.DeleteFolderAnyway(tempFolderPath);
 		}
 
 
@@ -119,6 +130,26 @@ namespace EPPZ.Persistence.Editor.Test
 
 
 	#region File
+
+		[Test]
+		public void ObjectToFile_Without_ManageFileExtensions()
+		{
+			// Opt-out file extension management.
+			serializer.TurnOffFileExtensionManagement();
+
+			// No extension added silently.
+			serializer.ObjectToFile(first, tempFolderPath+"first_test_extension");
+			FileAssert.DoesNotExist(tempFolderPath + "first_test_extension.bytes");
+			FileAssert.Exists(tempFolderPath + "first_test_extension");
+
+			// Any extension can be used.
+			serializer.ObjectToFile(first, tempFolderPath+"first_test_extension.archive");
+			FileAssert.DoesNotExist(tempFolderPath + "first_test_extension.bytes");
+			FileAssert.Exists(tempFolderPath + "first_test_extension.archive");
+
+			// Opt-in file extension management (for the rest of the tests).
+			serializer.TurnOnFileExtensionManagement();
+		}	
 
 	#endregion
 	

@@ -1,5 +1,29 @@
 # eppz.Persistence
 
+* 0.6.0
+
+	+ Added managing multiple extensions
+		+ Extension helper methods
+			+ Look up an existing files
+				+ `Serializer.GetExistingFilePathWithFileExtensions()`
+				+ `Serializer.IsFileExistWithFileExtensions()`
+				+ `String.WithExistingFileExtension()`
+			+ Simply create a new path
+				+ `Serializer.CreateFilePathWithPrimaryFileExtension()`
+				+ `Serializer.CreateFilePathWithSecondaryFileExtension()`
+				+ `String.WithExtension()`
+			+ `Serializer.PrimaryFileExtension`
+			+ `Serializer.SecondaryFileExtension`
+			+ `Serializer.SecondaryFileExtension`
+			+ `Serializer.TurnOffFileExtensionManagement`
+			+ `Serializer.TurnOnFileExtensionManagement`
+		+ Tests
+			+ Renamed the latter two entity to `txt`
+				+ Being secondary extension for both serializer
+					+ Still works with `Resources.Load()`
+			+ Split resource folders to `JSON` and `Binary` (for asynchronous tests)
+		+ Update `README.md`
+
 * 0.5.5
 
 	+ Renamed for `String` and `Object` extensions

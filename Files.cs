@@ -72,6 +72,12 @@ namespace EPPZ.Persistence
 			Directory.Delete(path);
 		}
 
+		public static void DeleteFolderAnyway(string path)
+		{
+			if (!Directory.Exists(path)) return; // Only directory if exists at all
+			Directory.Delete(path, true);
+		}
+
 		public static void AreEqual(string path_a, string path_b)
         {
             using (StreamReader stream_a = File.OpenText(path_a))

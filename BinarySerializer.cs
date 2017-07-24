@@ -26,8 +26,8 @@ namespace EPPZ.Persistence
 
 	#region Overrides
 
-		public override string Extension
-		{ get { return "bytes"; } }
+		public override string[] FileExtensions
+		{ get { return new string[]{ "bytes", "txt", "data" }; } }
 
 	#endregion
 
@@ -72,21 +72,21 @@ namespace EPPZ.Persistence
 		{
             Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes"); // Fix iOS AOT issue
 			BinaryFormatter formatter = new BinaryFormatter();
-			FileStream file = File.Create(GetFilePathWithExtension(filePath));
+			FileStream file = File.Create(filePath.WithFileExtension(this));
 			formatter.Serialize(file, _object);
 			file.Close();
         }
 
 		public override T DeserializeFile<T>(string filePath)
 		{
-            if (IsFileExist(filePath) == false) return default(T); // Only if saved any
+            if (IsFileExistWithFileExtensions(filePath) == false) return default(T); // Only if saved any
 
 			T _object = default(T);
 			try
 			{
 				Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes"); // Fix iOS AOT issue
 				BinaryFormatter formatter = new BinaryFormatter();
-				FileStream file = File.Open(GetFilePathWithExtension(filePath), FileMode.Open);
+				FileStream file = File.Open(GetExistingFilePathWithFileExtensions(filePath), FileMode.Open);
 				_object = (T)formatter.Deserialize(file);
 				file.Close();
 			}
