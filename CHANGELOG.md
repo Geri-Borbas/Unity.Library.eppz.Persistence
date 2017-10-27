@@ -1,5 +1,9 @@
 # eppz.Persistence
 
+* 0.6.3
+
+	+ Removed unnecessary `UnityEditor` uses (fixes build issues)
+
 * 0.6.2
 		
 	+ Delete some leftover test files on `TearDown`

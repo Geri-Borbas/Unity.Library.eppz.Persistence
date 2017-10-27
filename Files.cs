@@ -6,10 +6,12 @@
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+using NUnit.Framework;
+#endif
 
 using System.IO;
-using NUnit.Framework;
 
 
 namespace EPPZ.Persistence
@@ -54,7 +56,10 @@ namespace EPPZ.Persistence
 		public static void DeleteAssetIfExists(string assetPath)
 		{
 			if (!File.Exists(assetPath)) return;
+			
+			#if UNITY_EDITOR			
 			AssetDatabase.DeleteAsset(assetPath);
+			#endif
 		}
 
 		public static void DeleteFolderIfEmpty(string path)
@@ -86,7 +91,10 @@ namespace EPPZ.Persistence
                 {
                     string string_a = stream_a.ReadToEnd();
                     string string_b = stream_b.ReadToEnd();
+
+					#if UNITY_EDITOR
                     Assert.AreEqual(string_a, string_b);
+					#endif
                 }
             }
         }
